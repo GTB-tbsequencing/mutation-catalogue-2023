@@ -1,0 +1,1195 @@
+{
+    "Comment": "Simple Genomics Workflow with mapping",
+    "StartAt": "Initialize",
+    "States": {
+        "Initialize": {
+            "Type": "Pass",
+            "Result": {
+                "Bwa": "${BatchJobDefinitionBwa}",
+                "Samtools": "${BatchJobDefinitionSamtools}",
+                "Bcftools": "${BatchJobDefinitionBcftools}",
+                "Kraken": "${BatchJobDefinitionKraken}",
+                "Gatk": "${BatchJobDefinitionGATK}",
+                "Freebayes": "${BatchJobDefinitionFreebayes}",
+                "Sratools": "${BatchJobDefinitionSraTools}",
+                "Delly": "${BatchJobDefinitionDelly}",
+                "Mosdepth": "${BatchJobDefinitionMosDepth}",
+                "BioPython": "${BatchJobDefinitionBioPython}",
+                "Bedtools": "${BatchJobDefinitionBedtools}",
+                "FastQC": "${BatchJobDefinitionFastQC}"
+            },
+            "ResultPath": "$.JobDefinitions",
+            "Next": "IterateAlignment"
+        },
+        "IterateAlignment": {
+            "Type": "Map",
+            "OutputPath": "$[0]",
+            "ItemsPath": "$.LibraryIds.Value",
+            "Parameters": {
+                "Execution.$": "$$.Execution.Name",
+                "BatchQueue.$": "$.BatchQueue",
+                "SampleId.$": "$.SampleId",
+                "RefseqAssemblyAccession.$": "$.RefseqAssemblyAccession",
+                "AssemblyName.$": "$.AssemblyName",
+                "ReferenceName.$": "States.Format('{}_{}', $.RefseqAssemblyAccession, $.AssemblyName)",
+                "NucleotideAccession.$": "$.NucleotideAccession",
+                "KrakenDbName.$": "$.KrakenDbName",
+                "SampleType.$": "$$.Map.Item.Value[2]",
+                "FastqId.$": "$$.Map.Item.Value[0]",
+                "Location.$": "$$.Map.Item.Value[1]",
+                "JobDefinitions.$": "$.JobDefinitions",
+                "LibraryCounts.$": "$.LibraryCounts",
+                "SequencingFile": {
+                    "FilePath.$": "$$.Map.Item.Value[3]"
+                }
+            },
+            "Next": "ParallelKrakenGenotyping",
+            "Iterator": {
+                "StartAt": "ChoiceSampleOriginForDownload",
+                "States": {
+                    "ChoiceSampleOriginForDownload": {
+                        "Type": "Choice",
+                        "Choices": [
+                            {
+                                "Variable": "$.Location",
+                                "StringEquals": "NCBI",
+                                "Next": "SRAPass"
+                            }
+                        ],
+                        "Default": "choiceS3orNGDCFTP"
+                    },
+                    "SRAPass": {
+                        "Type": "Pass",
+                        "Result": {
+                            "R1Suffix": "1.fastq",
+                            "R2Suffix": "2.fastq"
+                        },
+                        "ResultPath": "$.Reads",
+                        "Next": "DownloadReadsFromSRA"
+                    },
+                    "DownloadReadsFromSRA": {
+                        "Type": "Task",
+                        "ResultPath": null,
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobName": "fasterq-dump",
+                            "JobDefinition.$": "$.JobDefinitions.Sratools",
+                            "JobQueue.$": "$.BatchQueue",
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "/bin/bash",
+                                    "-c",
+                                    "Ref::COMMAND"
+                                ]
+                            },
+                            "Parameters": {
+                                "COMMAND.$": "States.Format('rm -rf tmp-{}/ && vdb-config --report-cloud-identity yes && prefetch --output-directory tmp-{} {} && mv tmp-{}/{}.sra tmp-{}/{} && fasterq-dump --log-level info --split-files --outdir {}/ --temp tmp-{} --force tmp-{}/{} && rm -rf tmp-{}/', $.FastqId, $.FastqId, $.FastqId, $.FastqId, $.FastqId, $.FastqId, $.FastqId, $.SampleId, $.FastqId, $.FastqId, $.FastqId, $.FastqId)"
+                            }
+                        },
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "IntervalSeconds": 5,
+                                "MaxAttempts": 10,
+                                "BackoffRate": 2.0
+                            }
+                        ],
+                        "Next": "ParallelFastQC"
+                    },
+                    "choiceS3orNGDCFTP": {
+                        "Type": "Choice",
+                        "Choices": [
+                            {
+                                "Variable": "$.Location",
+                                "StringEquals": "S3",
+                                "Next": "IterateCopyReadsFromS3"
+                            },
+                            {
+                                "Variable": "$.Location",
+                                "StringEquals": "NGDC-CNCB",
+                                "Next": "downloadNGDCFtp"
+                            },
+                            {
+                                "Variable": "$.Location",
+                                "StringEquals": "EBI",
+                                "Next": "downloadNGDCFtp"
+                            }
+                        ]
+                    },
+                    "IterateCopyReadsFromS3": {
+                        "Type": "Map",
+                        "ResultPath": null,
+                        "ItemsPath": "$.SequencingFile.FilePath",
+                        "Parameters": {
+                            "SampleId.$": "$.SampleId",
+                            "FastqPath.$": "$$.Map.Item.Value",
+                            "FastqId.$": "$.FastqId",
+                            "BatchQueue.$": "$.BatchQueue",
+                            "JobDefinitions": {
+                                "BioPython.$": "$.JobDefinitions.BioPython"
+                            }
+                        },
+                        "Next": "S3Pass",
+                        "Iterator": {
+                            "StartAt": "CopyReadsFromS3",
+                            "States": {
+                                "CopyReadsFromS3": {
+                                    "Type": "Task",
+                                    "ResultPath": null,
+                                    "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                    "Parameters": {
+                                        "JobName": "CopyReadsFromS3",
+                                        "JobDefinition.$": "$.JobDefinitions.BioPython",
+                                        "JobQueue.$": "$.BatchQueue",
+                                        "ContainerOverrides": {
+                                            "ResourceRequirements": [
+                                                {
+                                                    "Type": "VCPU",
+                                                    "Value": "1"
+                                                },
+                                                {
+                                                    "Type": "MEMORY",
+                                                    "Value": "1000"
+                                                }
+                                            ],
+                                            "Command": [
+                                                "/scripts/copy_fastq_from_s3.py",
+                                                "--fastq_path",
+                                                "Ref::FASTQ_PATH",
+                                                "--fastq_id",
+                                                "Ref::FASTQ_ID",
+                                                "--sample_id",
+                                                "Ref::SAMPLE_ID"
+                                            ]
+                                        },
+                                        "Parameters": {
+                                            "FASTQ_PATH.$": "$.FastqPath",
+                                            "FASTQ_ID.$": "$.FastqId",
+                                            "SAMPLE_ID.$": "$.SampleId"
+                                        }
+                                    },
+                                    "Retry": [
+                                        {
+                                            "ErrorEquals": [
+                                                "Batch.AWSBatchException"
+                                            ],
+                                            "IntervalSeconds": 5,
+                                            "MaxAttempts": 10,
+                                            "BackoffRate": 2.0
+                                        }
+                                    ],
+                                    "End": true
+                                }
+                            }
+                        }
+                    },
+                    "S3Pass": {
+                        "Type": "Pass",
+                        "Result": {
+                            "R1Suffix": "R1.fastq.gz",
+                            "R2Suffix": "R2.fastq.gz"
+                        },
+                        "ResultPath": "$.Reads",
+                        "Next": "ParallelFastQC"
+                    },
+                    "downloadNGDCFtp": {
+                        "Type": "Map",
+                        "ResultPath": null,
+                        "ItemsPath": "$.SequencingFile.FilePath",
+                        "Parameters": {
+                            "SampleId.$": "$.SampleId",
+                            "FastqPath.$": "$$.Map.Item.Value",
+                            "FastqId.$": "$.FastqId",
+                            "ReadNum.$": "States.MathAdd($$.Map.Item.Index, 1)",
+                            "JobDefMosDepth.$": "$.JobDefinitions.Mosdepth",
+                            "BatchQueue.$": "$.BatchQueue"
+                        },
+                        "Next": "NGDC-CNCBPass",
+                        "Iterator": {
+                            "StartAt": "DownloadReadByFtp",
+                            "States": {
+                                "DownloadReadByFtp": {
+                                    "Type": "Task",
+                                    "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                    "Parameters": {
+                                        "JobName": "download-ftp",
+                                        "JobDefinition.$": "$.JobDefMosDepth",
+                                        "JobQueue.$": "$.BatchQueue",
+                                        "ContainerOverrides": {
+                                            "ResourceRequirements": [
+                                                {
+                                                    "Type": "VCPU",
+                                                    "Value": "1"
+                                                },
+                                                {
+                                                    "Type": "MEMORY",
+                                                    "Value": "1000"
+                                                }
+                                            ],
+                                            "Command": [
+                                                "/bin/bash",
+                                                "-c",
+                                                "Ref::COMMAND"
+                                            ]
+                                        },
+                                        "Parameters": {
+                                            "COMMAND.$": "States.Format('mkdir -p {}/ && cd {}/ && wget -qO- {} > {}_R{}.fastq.gz', $.SampleId, $.SampleId, $.FastqPath, $.FastqId, $.ReadNum)"
+                                        }
+                                    },
+                                    "Retry": [
+                                        {
+                                            "ErrorEquals": [
+                                                "Batch.AWSBatchException"
+                                            ],
+                                            "IntervalSeconds": 5,
+                                            "MaxAttempts": 10,
+                                            "BackoffRate": 2.0
+                                        }
+                                    ],
+                                    "End": true
+                                }
+                            }
+                        }
+                    },
+                    "NGDC-CNCBPass": {
+                        "Type": "Pass",
+                        "ResultPath": "$.Reads",
+                        "Result": {
+                            "R1Suffix": "R1.fastq.gz",
+                            "R2Suffix": "R2.fastq.gz"
+                        },
+                        "Next": "ParallelFastQC"
+                    },
+                    "ParallelFastQC": {
+                        "Type": "Parallel",
+                        "OutputPath": "$[0]",
+                        "Branches": [
+                            {
+                                "StartAt": "BwaMem",
+                                "States": {
+                                    "BwaMem": {
+                                        "Type": "Task",
+                                        "ResultPath": null,
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobName": "bwa-mem",
+                                            "JobDefinition.$": "$.JobDefinitions.Bwa",
+                                            "JobQueue.$": "$.BatchQueue",
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "/bin/bash",
+                                                    "-c",
+                                                    "Ref::COMMAND"
+                                                ]
+                                            },
+                                            "Parameters": {
+                                                "COMMAND.$": "States.Format('mkdir -p {} genotype locus-stats taxonomy-assignment global-stats deletion && bwa mem -R \\'@RG\\\\tID:{}\\\\tSM:{}\\\\tPL:ILLUMINA\\' -t 4 -o {}/{}.sam references/{}.fna {}/{}_{} {}/{}_{}', $.SampleId, $.FastqId, $.SampleId, $.SampleId, $.FastqId, $.ReferenceName, $.SampleId, $.FastqId, $.Reads.R1Suffix, $.SampleId, $.FastqId, $.Reads.R2Suffix)"
+                                            }
+                                        },
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "IntervalSeconds": 5,
+                                                "MaxAttempts": 10,
+                                                "BackoffRate": 2.0
+                                            }
+                                        ],
+                                        "Next": "SamtoolsSort"
+                                    },
+                                    "SamtoolsSort": {
+                                        "Type": "Task",
+                                        "ResultPath": null,
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobName": "samtools-sort",
+                                            "JobDefinition.$": "$.JobDefinitions.Samtools",
+                                            "JobQueue.$": "$.BatchQueue",
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "/bin/bash",
+                                                    "-c",
+                                                    "Ref::COMMAND"
+                                                ]
+                                            },
+                                            "Parameters": {
+                                                "COMMAND.$": "States.Format('samtools sort -@ 4 -o {}/{}.bam {}/{}.sam && samtools index {}/{}.bam', $.SampleId, $.FastqId, $.SampleId, $.FastqId, $.SampleId, $.FastqId)"
+                                            }
+                                        },
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "IntervalSeconds": 5,
+                                                "MaxAttempts": 10,
+                                                "BackoffRate": 2.0
+                                            }
+                                        ],
+                                        "Next": "ChoiceSampleType"
+                                    },
+                                    "ChoiceSampleType": {
+                                        "Type": "Choice",
+                                        "Choices": [
+                                            {
+                                                "Variable": "$.SampleType",
+                                                "StringEquals": "WGS",
+                                                "Next": "WGSPass"
+                                            },
+                                            {
+                                                "Or": [
+                                                    {
+                                                        "Variable": "$.SampleType",
+                                                        "StringEquals": "Deeplex_1"
+                                                    },
+                                                    {
+                                                        "Variable": "$.SampleType",
+                                                        "StringEquals": "DrugResistanceGenes"
+                                                    }
+                                                ],
+                                                "Next": "tNGSPass"
+                                            }
+                                        ]
+                                    },
+                                    "tNGSPass": {
+                                        "Type": "Pass",
+                                        "Result": {
+                                            "CutOff": "0.05"
+                                        },
+                                        "ResultPath": "$.Freebayes",
+                                        "End": true
+                                    },
+                                    "WGSPass": {
+                                        "Type": "Pass",
+                                        "Result": {
+                                            "CutOff": "0.2"
+                                        },
+                                        "ResultPath": "$.Freebayes",
+                                        "Next": "GATKRemoveDuplicates"
+                                    },
+                                    "GATKRemoveDuplicates": {
+                                        "Type": "Task",
+                                        "ResultPath": null,
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobName": "gatk-rmdup",
+                                            "JobDefinition.$": "$.JobDefinitions.Gatk",
+                                            "JobQueue.$": "$.BatchQueue",
+                                            "ContainerOverrides": {
+                                                "ResourceRequirements": [
+                                                    {
+                                                        "Type": "VCPU",
+                                                        "Value": "1"
+                                                    },
+                                                    {
+                                                        "Type": "MEMORY",
+                                                        "Value": "2048"
+                                                    }
+                                                ],
+                                                "Command": [
+                                                    "/bin/bash",
+                                                    "-c",
+                                                    "Ref::COMMAND"
+                                                ]
+                                            },
+                                            "Parameters": {
+                                                "COMMAND.$": "States.Format('gatk MarkDuplicates --REMOVE_DUPLICATES true --INPUT {}/{}.bam --OUTPUT {}/{}_rmdup.bam --METRICS_FILE {}/{}_rmdupmetrics.txt && mv {}/{}_rmdup.bam {}/{}.bam && gatk BuildBamIndex --INPUT {}/{}.bam --OUTPUT {}/{}.bam.bai', $.SampleId, $.FastqId, $.SampleId, $.FastqId, $.SampleId, $.FastqId, $.SampleId, $.FastqId, $.SampleId, $.FastqId, $.SampleId, $.FastqId, $.SampleId, $.FastqId)"
+                                            }
+                                        },
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "IntervalSeconds": 5,
+                                                "MaxAttempts": 10,
+                                                "BackoffRate": 2.0
+                                            }
+                                        ],
+                                        "End": true
+                                    }
+                                }
+                            },
+                            {
+                                "StartAt": "FastQC",
+                                "States": {
+                                    "FastQC": {
+                                        "Type": "Task",
+                                        "ResultPath": null,
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobName": "fastqc",
+                                            "JobDefinition.$": "$.JobDefinitions.FastQC",
+                                            "JobQueue.$": "$.BatchQueue",
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "/bin/bash",
+                                                    "-c",
+                                                    "Ref::COMMAND"
+                                                ]
+                                            },
+                                            "Parameters": {
+                                                "COMMAND.$": "States.Format('mkdir -p {} && fastqc --outdir {} {}/{}_{} {}/{}_{}', $.SampleId, $.SampleId, $.SampleId, $.FastqId, $.Reads.R1Suffix, $.SampleId, $.FastqId, $.Reads.R2Suffix)"
+                                            }
+                                        },
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "IntervalSeconds": 5,
+                                                "MaxAttempts": 10,
+                                                "BackoffRate": 2.0
+                                            }
+                                        ],
+                                        "End": true
+                                    }
+                                }
+                            }
+                        ],
+                        "End": true
+                    }
+                }
+            }
+        },
+        "ParallelKrakenGenotyping": {
+            "ResultPath": null,
+            "Type": "Parallel",
+            "Branches": [
+                {
+                    "StartAt": "ChoiceLibraryNumber",
+                    "States": {
+                        "ChoiceLibraryNumber": {
+                            "Type": "Choice",
+                            "Choices": [
+                                {
+                                    "Variable": "$.LibraryCounts.Value",
+                                    "NumericEquals": 1,
+                                    "Next": "RenameAlignment"
+                                }
+                            ],
+                            "Default": "MergeAlignments"
+                        },
+                        "RenameAlignment": {
+                            "Type": "Task",
+                            "ResultPath": null,
+                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                            "Parameters": {
+                                "JobName": "rename-alignment",
+                                "JobDefinition.$": "$.JobDefinitions.Mosdepth",
+                                "JobQueue.$": "$.BatchQueue",
+                                "ContainerOverrides": {
+                                    "ResourceRequirements": [
+                                        {
+                                            "Type": "VCPU",
+                                            "Value": "1"
+                                        },
+                                        {
+                                            "Type": "MEMORY",
+                                            "Value": "500"
+                                        }
+                                    ],
+                                    "Command": [
+                                        "/bin/bash",
+                                        "-c",
+                                        "Ref::COMMAND"
+                                    ]
+                                },
+                                "Parameters": {
+                                    "COMMAND.$": "States.Format('mv {}/{}.bam {}/{}.bam && mv {}/{}.bam.bai {}/{}.bam.bai', $.SampleId, $.FastqId, $.SampleId, $.SampleId, $.SampleId, $.FastqId, $.SampleId, $.SampleId)"
+                                }
+                            },
+                            "Retry": [
+                                {
+                                    "ErrorEquals": [
+                                        "Batch.AWSBatchException"
+                                    ],
+                                    "IntervalSeconds": 5,
+                                    "MaxAttempts": 10,
+                                    "BackoffRate": 2.0
+                                }
+                            ],
+                            "Next": "ParallelGenotyping"
+                        },
+                        "MergeAlignments": {
+                            "Type": "Task",
+                            "InputPath": "$",
+                            "ResultPath": null,
+                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                            "Parameters": {
+                                "JobName": "samtools-merge",
+                                "JobDefinition.$": "$.JobDefinitions.Samtools",
+                                "JobQueue.$": "$.BatchQueue",
+                                "ContainerOverrides": {
+                                    "ResourceRequirements": [
+                                        {
+                                            "Type": "VCPU",
+                                            "Value": "1"
+                                        },
+                                        {
+                                            "Type": "MEMORY",
+                                            "Value": "4000"
+                                        }
+                                    ],
+                                    "Command": [
+                                        "/bin/bash",
+                                        "-c",
+                                        "Ref::COMMAND"
+                                    ]
+                                },
+                                "Parameters": {
+                                    "COMMAND.$": "States.Format('samtools merge {}/{}.bam {}/*.bam && samtools index {}/{}.bam', $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId)"
+                                }
+                            },
+                            "Retry": [
+                                {
+                                    "ErrorEquals": [
+                                        "Batch.AWSBatchException"
+                                    ],
+                                    "IntervalSeconds": 5,
+                                    "MaxAttempts": 10,
+                                    "BackoffRate": 2.0
+                                }
+                            ],
+                            "Next": "ParallelGenotyping"
+                        },
+                        "ParallelGenotyping": {
+                            "Type": "Parallel",
+                            "ResultPath": null,
+                            "Branches": [
+                                {
+                                    "StartAt": "AllGenotypers",
+                                    "States": {
+                                        "AllGenotypers": {
+                                            "Type": "Parallel",
+                                            "ResultPath": null,
+                                            "Branches": [
+                                                {
+                                                    "StartAt": "Bcftools",
+                                                    "States": {
+                                                        "Bcftools": {
+                                                            "Type": "Task",
+                                                            "ResultPath": null,
+                                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                                            "Parameters": {
+                                                                "JobName": "bcftools-mpileup",
+                                                                "JobDefinition.$": "$.JobDefinitions.Bcftools",
+                                                                "JobQueue.$": "$.BatchQueue",
+                                                                "ContainerOverrides": {
+                                                                    "Command": [
+                                                                        "/bin/bash",
+                                                                        "-c",
+                                                                        "Ref::COMMAND"
+                                                                    ]
+                                                                },
+                                                                "Parameters": {
+                                                                    "COMMAND.$": "States.Format('bcftools mpileup --annotate FORMAT/AD,FORMAT/DP --threads 4 -Oz -f references/{}.fna -o {}/{}.mpileup.gz {}/{}.bam && bcftools call -m --threads 4 -Oz -o {}/{}-bcftools.vcf.gz {}/{}.mpileup.gz && bcftools view --exclude \"GT=\\'0/0\\'|GT=\\'./.\\'\" {}/{}-bcftools.vcf.gz > {}/{}-bcftools.vcf', $.ReferenceName, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId)"
+                                                                }
+                                                            },
+                                                            "Retry": [
+                                                                {
+                                                                    "ErrorEquals": [
+                                                                        "Batch.AWSBatchException"
+                                                                    ],
+                                                                    "IntervalSeconds": 5,
+                                                                    "MaxAttempts": 10,
+                                                                    "BackoffRate": 2.0
+                                                                }
+                                                            ],
+                                                            "End": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "StartAt": "Freebayes",
+                                                    "States": {
+                                                        "Freebayes": {
+                                                            "Type": "Task",
+                                                            "ResultPath": null,
+                                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                                            "Parameters": {
+                                                                "JobName": "freebayes",
+                                                                "JobDefinition.$": "$.JobDefinitions.Freebayes",
+                                                                "JobQueue.$": "$.BatchQueue",
+                                                                "ContainerOverrides": {
+                                                                    "Command": [
+                                                                        "freebayes",
+                                                                        "--ploidy",
+                                                                        "2",
+                                                                        "--haplotype-length",
+                                                                        "2",
+                                                                        "--min-alternate-fraction",
+                                                                        "Ref::CUT_OFF",
+                                                                        "--fasta-reference",
+                                                                        "Ref::REFERENCE",
+                                                                        "--vcf",
+                                                                        "Ref::FREEBAYES_VCF",
+                                                                        "Ref::BAM"
+                                                                    ]
+                                                                },
+                                                                "Parameters": {
+                                                                    "CUT_OFF.$": "$.Freebayes.CutOff",
+                                                                    "REFERENCE.$": "States.Format('references/{}.fna', $.ReferenceName)",
+                                                                    "FREEBAYES_VCF.$": "States.Format('{}/{}-freebayes.vcf', $.SampleId, $.SampleId)",
+                                                                    "BAM.$": "States.Format('{}/{}.bam', $.SampleId, $.SampleId)"
+                                                                }
+                                                            },
+                                                            "Retry": [
+                                                                {
+                                                                    "ErrorEquals": [
+                                                                        "Batch.AWSBatchException"
+                                                                    ],
+                                                                    "IntervalSeconds": 5,
+                                                                    "MaxAttempts": 10,
+                                                                    "BackoffRate": 2.0
+                                                                }
+                                                            ],
+                                                            "End": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "StartAt": "GATKHaplotypeCaller",
+                                                    "States": {
+                                                        "GATKHaplotypeCaller": {
+                                                            "Type": "Task",
+                                                            "ResultPath": null,
+                                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                                            "Parameters": {
+                                                                "JobName": "haplotypecaller",
+                                                                "JobDefinition.$": "$.JobDefinitions.Gatk",
+                                                                "JobQueue.$": "$.BatchQueue",
+                                                                "ContainerOverrides": {
+                                                                    "Command": [
+                                                                        "gatk",
+                                                                        "HaplotypeCaller",
+                                                                        "--sample-ploidy",
+                                                                        "2",
+                                                                        "--output",
+                                                                        "Ref::GATK_VCF",
+                                                                        "--reference",
+                                                                        "Ref::REFERENCE",
+                                                                        "--input",
+                                                                        "Ref::BAM"
+                                                                    ]
+                                                                },
+                                                                "Parameters": {
+                                                                    "GATK_VCF.$": "States.Format('{}/{}-gatk.vcf', $.SampleId, $.SampleId)",
+                                                                    "REFERENCE.$": "States.Format('references/{}.fna', $.ReferenceName)",
+                                                                    "BAM.$": "States.Format('{}/{}.bam', $.SampleId, $.SampleId)"
+                                                                }
+                                                            },
+                                                            "Retry": [
+                                                                {
+                                                                    "ErrorEquals": [
+                                                                        "Batch.AWSBatchException"
+                                                                    ],
+                                                                    "IntervalSeconds": 5,
+                                                                    "MaxAttempts": 10,
+                                                                    "BackoffRate": 2.0
+                                                                }
+                                                            ],
+                                                            "End": true
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "Next": "PrepareGenotypes"
+                                        },
+                                        "PrepareGenotypes": {
+                                            "Type": "Task",
+                                            "ResultPath": null,
+                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                            "Parameters": {
+                                                "JobName": "genotypes",
+                                                "JobDefinition.$": "$.JobDefinitions.Bcftools",
+                                                "JobQueue.$": "$.BatchQueue",
+                                                "ContainerOverrides": {
+                                                    "ResourceRequirements": [
+                                                        {
+                                                            "Type": "VCPU",
+                                                            "Value": "1"
+                                                        },
+                                                        {
+                                                            "Type": "MEMORY",
+                                                            "Value": "1000"
+                                                        }
+                                                    ],
+                                                    "Command": [
+                                                        "/bin/bash",
+                                                        "/scripts/format_all_genotypes.sh",
+                                                        "Ref::FILE",
+                                                        "Ref::REFERENCE"
+                                                    ]
+                                                },
+                                                "Parameters": {
+                                                    "FILE.$": "States.Format('{}/{}', $.SampleId, $.SampleId)",
+                                                    "REFERENCE.$": "States.Format('references/{}.fna', $.ReferenceName)"
+                                                }
+                                            },
+                                            "Retry": [
+                                                {
+                                                    "ErrorEquals": [
+                                                        "Batch.AWSBatchException"
+                                                    ],
+                                                    "IntervalSeconds": 5,
+                                                    "MaxAttempts": 10,
+                                                    "BackoffRate": 2.0
+                                                }
+                                            ],
+                                            "End": true
+                                        }
+                                    }
+                                },
+                                {
+                                    "StartAt": "ChoiceDelly",
+                                    "States": {
+                                        "ChoiceDelly": {
+                                            "Type": "Choice",
+                                            "Choices": [
+                                                {
+                                                    "Variable": "$.SampleType",
+                                                    "StringEquals": "WGS",
+                                                    "Next": "Delly"
+                                                }
+                                            ],
+                                            "Default": "NoDelly"
+                                        },
+                                        "Delly": {
+                                            "Type": "Task",
+                                            "ResultPath": null,
+                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                            "Parameters": {
+                                                "JobName": "delly",
+                                                "JobDefinition.$": "$.JobDefinitions.Delly",
+                                                "JobQueue.$": "$.BatchQueue",
+                                                "ContainerOverrides": {
+                                                    "ResourceRequirements": [
+                                                        {
+                                                            "Type": "VCPU",
+                                                            "Value": "1"
+                                                        },
+                                                        {
+                                                            "Type": "MEMORY",
+                                                            "Value": "4096"
+                                                        }
+                                                    ],
+                                                    "Command": [
+                                                        "delly",
+                                                        "call",
+                                                        "--genome",
+                                                        "Ref::REFERENCE",
+                                                        "--outfile",
+                                                        "Ref::DELLY_BCF",
+                                                        "Ref::BAM"
+                                                    ]
+                                                },
+                                                "Parameters": {
+                                                    "REFERENCE.$": "States.Format('references/{}.fna', $.ReferenceName)",
+                                                    "DELLY_BCF.$": "States.Format('{}/{}-delly.bcf', $.SampleId, $.SampleId)",
+                                                    "BAM.$": "States.Format('{}/{}.bam', $.SampleId, $.SampleId)"
+                                                }
+                                            },
+                                            "Retry": [
+                                                {
+                                                    "ErrorEquals": [
+                                                        "Batch.AWSBatchException"
+                                                    ],
+                                                    "IntervalSeconds": 5,
+                                                    "MaxAttempts": 10,
+                                                    "BackoffRate": 2.0
+                                                }
+                                            ],
+                                            "Next": "FilterDeletions"
+                                        },
+                                        "FilterDeletions": {
+                                            "Type": "Task",
+                                            "ResultPath": null,
+                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                            "Parameters": {
+                                                "JobName": "extract-deletions",
+                                                "JobDefinition.$": "$.JobDefinitions.Bcftools",
+                                                "JobQueue.$": "$.BatchQueue",
+                                                "ContainerOverrides": {
+                                                    "Command": [
+                                                        "/bin/bash",
+                                                        "-c",
+                                                        "Ref::COMMAND"
+                                                    ]
+                                                },
+                                                "Parameters": {
+                                                    "COMMAND.$": "States.Format('bcftools view {}/{}-delly.bcf -f \"PASS\" --include \\'ALT=\"<DEL>\"&GT!=\"0/0\"\\' | bcftools query -f\"[%SAMPLE],%CHROM,%POS,%REF,DEL-[%INFO/END],delly,%QUAL,[%DR],[%RR],[%DV],[%RV],[%GT]\\\\n\" > deletion/{}-delly.tsv', $.SampleId, $.SampleId, $.SampleId)"
+                                                }
+                                            },
+                                            "Retry": [
+                                                {
+                                                    "ErrorEquals": [
+                                                        "Batch.AWSBatchException"
+                                                    ],
+                                                    "IntervalSeconds": 5,
+                                                    "MaxAttempts": 10,
+                                                    "BackoffRate": 2.0
+                                                }
+                                            ],
+                                            "End": true
+                                        },
+                                        "NoDelly": {
+                                            "Type": "Pass",
+                                            "End": true
+                                        }
+                                    }
+                                },
+                                {
+                                    "StartAt": "ParallelStats",
+                                    "States": {
+                                        "ParallelStats": {
+                                            "Type": "Parallel",
+                                            "ResultPath": null,
+                                            "Branches": [
+                                                {
+                                                    "StartAt": "SamtoolsStats",
+                                                    "States": {
+                                                        "SamtoolsStats": {
+                                                            "Type": "Task",
+                                                            "ResultPath": null,
+                                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                                            "Parameters": {
+                                                                "JobName": "samtools-stats",
+                                                                "JobDefinition.$": "$.JobDefinitions.Samtools",
+                                                                "JobQueue.$": "$.BatchQueue",
+                                                                "ContainerOverrides": {
+                                                                    "ResourceRequirements": [
+                                                                        {
+                                                                            "Type": "VCPU",
+                                                                            "Value": "1"
+                                                                        },
+                                                                        {
+                                                                            "Type": "MEMORY",
+                                                                            "Value": "2000"
+                                                                        }
+                                                                    ],
+                                                                    "Command": [
+                                                                        "/bin/bash",
+                                                                        "-c",
+                                                                        "Ref::COMMAND"
+                                                                    ]
+                                                                },
+                                                                "Parameters": {
+                                                                    "COMMAND.$": "States.Format('samtools stats --remove-dups {}/{}.bam > {}/{}-samtools-stats.txt', $.SampleId, $.SampleId, $.SampleId, $.SampleId)"
+                                                                }
+                                                            },
+                                                            "Retry": [
+                                                                {
+                                                                    "ErrorEquals": [
+                                                                        "Batch.AWSBatchException"
+                                                                    ],
+                                                                    "IntervalSeconds": 5,
+                                                                    "MaxAttempts": 10,
+                                                                    "BackoffRate": 2.0
+                                                                }
+                                                            ],
+                                                            "End": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "StartAt": "MosDepth",
+                                                    "States": {
+                                                        "MosDepth": {
+                                                            "Type": "Task",
+                                                            "ResultPath": null,
+                                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                                            "Parameters": {
+                                                                "JobName": "mosdepth",
+                                                                "JobDefinition.$": "$.JobDefinitions.Mosdepth",
+                                                                "JobQueue.$": "$.BatchQueue",
+                                                                "ContainerOverrides": {
+                                                                    "Command": [
+                                                                        "/bin/bash",
+                                                                        "-c",
+                                                                        "Ref::COMMAND"
+                                                                    ]
+                                                                },
+                                                                "Parameters": {
+                                                                    "COMMAND.$": "States.Format('cd {} && mosdepth --thresholds 10,15,20,30 --by ../references/{}_{}.bed {} {}.bam', $.SampleId, $.RefseqAssemblyAccession, $.SampleType,  $.SampleId,  $.SampleId)"
+                                                                }
+                                                            },
+                                                            "Retry": [
+                                                                {
+                                                                    "ErrorEquals": [
+                                                                        "Batch.AWSBatchException"
+                                                                    ],
+                                                                    "IntervalSeconds": 5,
+                                                                    "MaxAttempts": 10,
+                                                                    "BackoffRate": 2.0
+                                                                }
+                                                            ],
+                                                            "Next": "CalculateStats"
+                                                        },
+                                                        "CalculateStats": {
+                                                            "Type": "Task",
+                                                            "ResultPath": null,
+                                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                                            "Parameters": {
+                                                                "JobName": "calculatestats",
+                                                                "JobDefinition.$": "$.JobDefinitions.BioPython",
+                                                                "JobQueue.$": "$.BatchQueue",
+                                                                "ContainerOverrides": {
+                                                                    "Command": [
+                                                                        "/scripts/calculate_quality_metrics_for_sample.py",
+                                                                        "Ref::THRESHOLDS",
+                                                                        "Ref::REGIONS",
+                                                                        "Ref::QCSTATS"
+                                                                    ]
+                                                                },
+                                                                "Parameters": {
+                                                                    "THRESHOLDS.$": "States.Format('{}/{}.thresholds.bed.gz', $.SampleId, $.SampleId)",
+                                                                    "REGIONS.$": "States.Format('{}/{}.regions.bed.gz', $.SampleId, $.SampleId)",
+                                                                    "QCSTATS.$": "States.Format('{}/{}_qcstats.txt', $.SampleId, $.SampleId)"
+                                                                }
+                                                            },
+                                                            "Retry": [
+                                                                {
+                                                                    "ErrorEquals": [
+                                                                        "Batch.AWSBatchException"
+                                                                    ],
+                                                                    "IntervalSeconds": 5,
+                                                                    "MaxAttempts": 10,
+                                                                    "BackoffRate": 2.0
+                                                                }
+                                                            ],
+                                                            "End": true
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "Next": "PrepareStats"
+                                        },
+                                        "PrepareStats": {
+                                            "Type": "Task",
+                                            "ResultPath": null,
+                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                            "Parameters": {
+                                                "JobName": "prepare-stats",
+                                                "JobDefinition.$": "$.JobDefinitions.BioPython",
+                                                "JobQueue.$": "$.BatchQueue",
+                                                "ContainerOverrides": {
+                                                    "ResourceRequirements": [
+                                                        {
+                                                            "Type": "VCPU",
+                                                            "Value": "1"
+                                                        },
+                                                        {
+                                                            "Type": "MEMORY",
+                                                            "Value": "1000"
+                                                        }
+                                                    ],
+                                                    "Command": [
+                                                        "/scripts/format_sequencing_stats.py",
+                                                        "Ref::FILE"
+                                                    ]
+                                                },
+                                                "Parameters": {
+                                                    "FILE.$": "States.Format('{}/{}', $.SampleId, $.SampleId)"
+                                                }
+                                            },
+                                            "Retry": [
+                                                {
+                                                    "ErrorEquals": [
+                                                        "Batch.AWSBatchException"
+                                                    ],
+                                                    "IntervalSeconds": 5,
+                                                    "MaxAttempts": 10,
+                                                    "BackoffRate": 2.0
+                                                }
+                                            ],
+                                            "End": true
+                                        }
+                                    }
+                                },
+                                {
+                                    "StartAt": "ConvertToCram",
+                                    "States": {
+                                        "ConvertToCram": {
+                                            "Type": "Task",
+                                            "ResultPath": null,
+                                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                            "Parameters": {
+                                                "JobName": "cramconvert",
+                                                "JobDefinition.$": "$.JobDefinitions.Samtools",
+                                                "JobQueue.$": "$.BatchQueue",
+                                                "ContainerOverrides": {
+                                                    "ResourceRequirements": [
+                                                        {
+                                                            "Type": "VCPU",
+                                                            "Value": "1"
+                                                        },
+                                                        {
+                                                            "Type": "MEMORY",
+                                                            "Value": "8000"
+                                                        }
+                                                    ],
+                                                    "Command": [
+                                                        "/bin/bash",
+                                                        "-c",
+                                                        "Ref::COMMAND"
+                                                    ]
+                                                },
+                                                "Parameters": {
+                                                    "COMMAND.$": "States.Format('samtools view -C --reference references/{}.fna -o {}/{}.cram {}/{}.bam && samtools index {}/{}.cram', $.ReferenceName, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId)"
+                                                }
+                                            },
+                                            "Retry": [
+                                                {
+                                                    "ErrorEquals": [
+                                                        "Batch.AWSBatchException"
+                                                    ],
+                                                    "IntervalSeconds": 5,
+                                                    "MaxAttempts": 10,
+                                                    "BackoffRate": 2.0
+                                                }
+                                            ],
+                                            "End": true
+                                        }
+                                    }
+                                }
+                            ],
+                            "End": true
+                        }
+                    }
+                },
+                {
+                    "StartAt": "Kraken",
+                    "States": {
+                        "Kraken": {
+                            "Type": "Task",
+                            "ResultPath": null,
+                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                            "Parameters": {
+                                "JobName": "kraken",
+                                "JobDefinition.$": "$.JobDefinitions.Kraken",
+                                "JobQueue.$": "$.BatchQueue",
+                                "ContainerOverrides": {
+                                    "ResourceRequirements": [
+                                        {
+                                            "Type": "VCPU",
+                                            "Value": "1"
+                                        },
+                                        {
+                                            "Type": "MEMORY",
+                                            "Value": "8000"
+                                        }
+                                    ],
+                                    "Command": [
+                                        "/bin/bash",
+                                        "-c",
+                                        "Ref::COMMAND"
+                                    ]
+                                },
+                                "Parameters": {
+                                    "COMMAND.$": "States.Format('kraken2 --db references/{} --threads 1 --report {}/{}-kraken.txt --paired {}/*.f*q* > {}/{}-kraken-full.txt', $.KrakenDbName, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId)"
+                                }
+                            },
+                            "Retry": [
+                                {
+                                    "ErrorEquals": [
+                                        "Batch.AWSBatchException"
+                                    ],
+                                    "IntervalSeconds": 5,
+                                    "MaxAttempts": 10,
+                                    "BackoffRate": 2.0
+                                }
+                            ],
+                            "Next": "PrepareKraken"
+                        },
+                        "PrepareKraken": {
+                            "Type": "Task",
+                            "ResultPath": null,
+                            "Resource": "arn:aws:states:::batch:submitJob.sync",
+                            "Parameters": {
+                                "JobName": "prepare-kraken",
+                                "JobDefinition.$": "$.JobDefinitions.BioPython",
+                                "JobQueue.$": "$.BatchQueue",
+                                "ContainerOverrides": {
+                                    "ResourceRequirements": [
+                                        {
+                                            "Type": "VCPU",
+                                            "Value": "1"
+                                        },
+                                        {
+                                            "Type": "MEMORY",
+                                            "Value": "1000"
+                                        }
+                                    ],
+                                    "Command": [
+                                        "/scripts/format_taxonomy_assignment.py",
+                                        "Ref::FILE"
+                                    ]
+                                },
+                                "Parameters": {
+                                    "FILE.$": "States.Format('{}/{}', $.SampleId, $.SampleId)"
+                                }
+                            },
+                            "Retry": [
+                                {
+                                    "ErrorEquals": [
+                                        "Batch.AWSBatchException"
+                                    ],
+                                    "IntervalSeconds": 5,
+                                    "MaxAttempts": 10,
+                                    "BackoffRate": 2.0
+                                }
+                            ],
+                            "End": true
+                        }
+                    }
+                }
+            ],
+            "Next": "CleanUpFiles"
+        },
+        "CleanUpFiles": {
+            "Type": "Task",
+            "ResultPath": null,
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "Parameters": {
+                "JobName": "cleanup-files",
+                "JobDefinition.$": "$.JobDefinitions.Mosdepth",
+                "JobQueue.$": "$.BatchQueue",
+                "ContainerOverrides": {
+                    "ResourceRequirements": [
+                        {
+                            "Type": "VCPU",
+                            "Value": "1"
+                        },
+                        {
+                            "Type": "MEMORY",
+                            "Value": "1000"
+                        }
+                    ],
+                    "Command": [
+                        "/bin/bash",
+                        "-c",
+                        "Ref::COMMAND"
+                    ]
+                },
+                "Parameters": {
+                    "COMMAND.$": "States.Format('rm -rf {}/*.f*q {}/*.f*q.gz {}/*.bam {}/*.bam.bai {}/*.sam {}/*.mpileup.gz {}/*-kraken-full.txt', $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId, $.SampleId)"
+                }
+            },
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Batch.AWSBatchException"
+                    ],
+                    "IntervalSeconds": 5,
+                    "MaxAttempts": 10,
+                    "BackoffRate": 2.0
+                }
+            ],
+            "End": true
+        }
+    }
+}
