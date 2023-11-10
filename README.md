@@ -31,16 +31,18 @@ sample_id,resolved_symbol,variant_category,predicted_effect,neutral,"max(af)",po
 10. stop_lost
 11. stop_retained_variant (stop codon changing to another stop codon)
 12. synonymous_variant
-13. pstream_gene_variant
+13. upstream_gene_variant
+- max(af) is the percentage of reads showing the variant
 
+position and neutral columns are not read by the algorithm and can be discarded
 
 ### phenotype
 ```
 sample_id,phenotypic_category,phenotype,box
 ```
 
-- phenotypic_category is the overall category the test was assigned to ("WHO" or "ALL")
-- phenotype is the result (R or S)
+- phenotypic_category is the overall category the test was assigned to (`WHO` or `ALL`)
+- phenotype is the result (`R` or `S`)
 - box is the subcategory of the test. Refer to the mutation catalogue report for more details.
 
 # CODE FILES
