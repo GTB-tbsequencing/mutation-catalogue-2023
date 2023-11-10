@@ -33,7 +33,7 @@ sample_id,phenotypic_category,phenotype,box
 All other folders each include code used to generate the mutation catalogue. This includes:
 
 ## Bioinformatic pipeline - Step Functions
-The [Step Function](https://aws.amazon.com/step-functions/) definition of our bioinformatic pipeline, in JSON format. Refer to the Step Function documentation for the specifications of the format. All executed commands are found in the *Parameters.Parameters.COMMAND" entry of each Step of the Worfklow.
+The [Step Function](https://aws.amazon.com/step-functions/) definition of our bioinformatic pipeline, in JSON format. Refer to the Step Function documentation for the specifications of the format. All executed commands are found in the *Parameters.Parameters.COMMAND* entry of each Step of the Worfklow.
 
 ## Variant Annotation - Python
 We used SnpEff to annote our variants with the following command: 
@@ -56,4 +56,4 @@ Contains all scripts necessary to run the SOLO algorithm in R.
 Contains all scripts necessary to run the SOLO algorithm in Stata.
 
 ## Database Schema - Postgres
-The definition of our  database which sustains all our analysis. Partly built using the [biosql](https://github.com/biosql/biosql) specifications. 
+The definition of our  database which sustains all our analysis. Partly built using the [biosql](https://github.com/biosql/biosql) specifications. Most of our ETL was implemented using PySpark scripts, found in the *Genotype ETL - PySpark* folder.
