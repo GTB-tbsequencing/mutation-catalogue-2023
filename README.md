@@ -71,6 +71,69 @@ The script can be modified to expect that column as output only if you wish to r
 ## Solo algorithm - R implementation
 Contains all scripts necessary to run the SOLO algorithm in R.
 
+For issues related to this code, email Leonid Chindelevitch <lchindel@ic.ac.uk>
+
+***
+Before starting work please enusre you have installed all the required packages:
+
+*conflicted* 1.2.0 (for managing conflicting function names between packages) 
+*haven*      2.5.3 (for converting DTA files into CSV files; may be omitted)
+*igraph*     1.5.1 (for the graph-based implementation of the SOLO algorithm)
+*magrittr*   2.0.3 (for syntactic sugar in the code)
+*tidyverse*  2.0.0 (for data manipulation)
+***
+This folder contains various scripts required to execute the analysis that led
+to version 2 of the catalogue, once the genomic variants have been extracted.
+
+It implements a fully ported version of the SOLO algorithm that is at the core 
+of the analysis, and provides an open-source alternative to the STATA codebase.
+***
+To unit-test the SOLO algorithm, run
+
+setwd("Solo algorithm - R implementation")
+source("Driver.R")
+source("Constants.R")
+source("SOLORefactoring.R")
+stopifnot(testSOLO())
+
+If no error message is produced, the unit test has been run successfully.
+***
+In additional to the phenotypic & genetic data extracted from our Postgres database,
+a few complimentory files located in the folder "Input data files for Solo algorithms/additional-data"
+are necessary to run a full replication of the algorithm 
+
+***
+A full replication of the analysis is run as follows; arguments explained below:
+
+source("Solo algorithm - R implementation/Driver.R")
+
+EXTRACTION_ID = "2023-04-25T06_00_10.443990_jr_b741dc136e079fa8583604a4915c0dc751724ae9880f06e7c2eacc939e086536"
+
+mainDriver(
+    EXTRACTION_ID = EXTRACTION_ID,
+    OUTPUT_DIRECTORY = paste0("Results/", EXTRACTION_ID),
+    SCRIPT_LOCATION_DIR = "Solo algorithm - R implementation",
+    DATA_DIRECTORY = paste0("Input data files for Solo algorithms/", EXTRACTION_ID),
+    NON_DATABASE_DIRECTORY = "Input data files for Solo algorithms/additional-data"
+)
+
+EXTRACTION_ID is the unique identifier for the preprocessed database containing 
+genotypic and phenotypic information that serves as input for the analysis. The
+default value corresponds to the database extraction provided in the repository.
+
+OUTPUT_DIRECTORY is the directory to be used for writing all the output files; 
+by default, it is set to "Results/" followed by EXTRACTION_ID to make it unique.
+
+SCRIPT_LOCATION_DIR is the directory where all the R scripts including this one 
+are located; the default value above works when run using the GitHub repository.
+
+DATA_DIRECTORY is the directory containing the database extraction;
+the default value above works when run using the GitHub repository.
+
+NON_DATABASE_DIRECTORY is the directory containing the additional CSV files for
+the analysis; the default value above works when run using the GitHub repository.
+
+
 ## Solo algorithm - Stata implementation
 Contains all scripts necessary to run the SOLO algorithm in Stata.
 
