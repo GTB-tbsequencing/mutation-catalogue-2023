@@ -1,0 +1,47 @@
+﻿Drug ,Gene ,Variant ,Comment 
+Isoniazid ,katG ,any AwR ,High-level resistance 
+Isoniazid ,katG ,any AwRI ,High-level resistance 
+Isoniazid ,inhA ,any AwR ,"Low-level resistance (multiple, genetically linked low-level resistance mutations are additive and confer high-level resistance) "
+Isoniazid ,inhA ,any AwRI ,"Low-level resistance (multiple, genetically linked low-level resistance mutations are additive and confer high-level resistance) "
+Moxifloxacin ,gyrA ,p.Ala90Val ,"Low-level resistance (multiple, genetically linked low-level resistance mutations are additive and confer high-level resistance) "
+Moxifloxacin ,gyrA ,p.Asp89Asn ,"Low-level resistance (multiple, genetically linked low-level resistance mutations are additive and confer high-level resistance) "
+Moxifloxacin ,gyrA ,p.Asp94Ala ,"Low-level resistance (multiple, genetically linked low-level resistance mutations are additive and confer high-level resistance) "
+Moxifloxacin ,gyrA ,p.Asp94Asn ,High-level resistance 
+Moxifloxacin ,gyrA ,p.Asp94Gly ,High-level resistance 
+Moxifloxacin ,gyrA ,p.Asp94His ,High-level resistance 
+Moxifloxacin ,gyrA ,p.Asp94Tyr ,High-level resistance 
+Moxifloxacin ,gyrA ,p.Gly88Ala ,"Low-level resistance (multiple, genetically linked low-level resistance mutations are additive and confer high-level resistance) "
+Moxifloxacin ,gyrA ,p.Gly88Cys ,High-level resistance 
+Moxifloxacin ,gyrA ,p.Ser91Pro ,"Low-level resistance (multiple, genetically linked low-level resistance mutations are additive and confer high-level resistance) "
+Moxifloxacin ,gyrB ,any AwR ,"Low-level resistance (multiple, genetically linked low-level resistance mutations are additive and confer high-level resistance) "
+Moxifloxacin ,gyrB ,any AwRI ,"Low-level resistance (multiple, genetically linked low-level resistance mutations are additive and confer high-level resistance) "
+Bedaquiline ,atpE ,p.Ala63Pro ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,atpE ,p.Ile66Met ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,pepQ ,LoF ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Ala36Val ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Arg134* ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Arg156fs ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Asn70Asp ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Asn98fs ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Asp165fs ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Cys46Arg ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Cys46fs ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Gln51fs ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Ile67Ser ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Leu142fs ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Leu32Ser ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Met146Thr ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Pro48fs ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Bedaquiline ,Rv0678 ,p.Tyr157fs ,"Includes data from one site that only submitted resistant strains, which may have inflated the PPV "
+Amikacin ,eis ,c.-14C>T ,Can only confer resistance if genetically linked to a functional Eis 
+Kanamycin ,eis ,c.-14C>T ,Can only confer resistance if genetically linked to a functional Eis 
+Kanamycin ,eis ,c.-10G>A ,Can only confer resistance if genetically linked to a functional Eis 
+Amikacin ,eis ,any LoF ,Abrogates effect of genetically linked AwR and AwRI eis mutations 
+Kanamycin ,eis ,any LoF ,Abrogates effect of genetically linked AwR and AwRI eis mutations 
+Bedaquiline ,Rv0678 ,any AwR ,Can only confer resistance if genetically linked to a functional MmpL5 
+Bedaquiline ,Rv0678 ,any AwRI ,Can only confer resistance if genetically linked to a functional MmpL5 
+Bedaquiline ,mmpL5 ,LoF ,Abrogates effect of genetically linked AwR and AwRI Rv0678 mutations 
+Clofazimine ,Rv0678 ,any AwR ,Can only confer resistance if genetically linked to a functional MmpL5 
+Clofazimine ,Rv0678 ,any AwRI ,Can only confer resistance if genetically linked to a functional MmpL5 
+Clofazimine ,mmpL5 ,LoF ,Abrogates effect of genetically linked AwR and AwRI Rv0678 mutations 
+Pyrazinamide,pncA,c.138A>G,"Consider that this variant might indicate that the isolate is M. canettii, which is intrinsically PZA resistanct"

@@ -1,0 +1,248 @@
+﻿drug,common_name,tier,combo,Frameshifts,Stop codons,variant,Genome position,INITIAL CONFIDENCE GRADING,DATASET(S),,,,,,,Previous WHO guidance,,,,Additional grading criteria applied,FINAL CONFIDENCE GRADING,
+,,,,,,,,,,setA,setB,Merker et al. (PMID 32143680),setC,setD,Neutral masked,Miotto et al. (PMID 29284687),NGS Guide 2018,Level of resistance to INH or MXF,RIF CC guide 2021,,,FOR WHO CATALOGUE UPDATE VER. 2
+AMI,,2,0,0,0,aftB_D397G,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,2,0,0,0,aftB_V293M,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,2,0,0,0,ccsA_I245M,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,2,0,0,0,ccsA_V27I,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,1,0,1,0,eis_807_del_2_ggt_g,2714526,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+AMI,,1,0,0,0,eis_c-12t,2715344,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,1,0,0,0,eis_V163I,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,2,0,0,0,fprA_N385D,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,1,0,0,0,rrs_a514c,1472359,Not assoc w R,WHO,0,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,2,0,0,0,rrs_c-187t,1471659,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,1,0,0,0,rrs_c492t,1472337,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,1,0,0,0,rrs_c517t,1472362,Not assoc w R,WHO,0,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,2,0,0,0,whiB6_-66_del_1_agctccgagctctagt_agctccgagtctagt,4338587,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+AMI,,2,0,0,0,whiB6_-73_del_1_agc_ag,4338594,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+AMI,,2,0,0,0,whiB6_-74_del_1_gc_g,4338595,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+AMI,,2,0,0,0,whiB6_-74_del_1_gct_gt,4338595,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+AMI,,2,0,0,0,whiB6_-74_del_1_gctctagtg_gtctagta,4338595,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+AMI,,2,0,0,0,whiB6_c-82t,4338603,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,2,0,0,0,whiB6_R107C,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,2,0,0,0,whiB6_R54Q,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,2,0,0,0,whiB6_T51P,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,1,0,1,0,whiB7_192_del_1_gc_g,3568488,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+AMI,,2,0,0,0,whiB7_c-178t,3568857,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+AMI,,1,0,0,0,whiB7_t-100c,3568779,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+BDQ,,1,0,0,0,mmpL5_D767N,,Not assoc w R,WHO,0,0,1,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+BDQ,,1,0,0,0,mmpL5_I948V,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+BDQ,,1,0,0,0,mmpL5_T794I,,Not assoc w R,WHO,0,0,1,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+BDQ,,2,0,0,0,Rv1979c_a-129g,2223293,Not assoc w R,WHO,1,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,aftB_D397G,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,aftB_V293M,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,ccsA_I245M,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,ccsA_V27I,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,fprA_N385D,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,1,0,0,0,rrs_a514c,1472359,Not assoc w R,WHO,0,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,1,0,0,0,rrs_a906g,1472751,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+CAP,,2,0,0,0,rrs_c-187t,1471659,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,1,0,0,0,rrs_c492t,1472337,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,1,0,0,0,rrs_c517t,1472362,Not assoc w R,WHO,1,1,0,1,1,1,Not assoc w R,Not assoc w R,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,whiB6_-66_del_1_agctccgagctctagt_agctccgagtctagt,4338587,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+CAP,,2,0,0,0,whiB6_-73_del_1_agc_ag,4338594,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+CAP,,2,0,0,0,whiB6_-74_del_1_gc_g,4338595,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+CAP,,2,0,0,0,whiB6_-74_del_1_gct_gt,4338595,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+CAP,,2,0,0,0,whiB6_-74_del_1_gctctagtg_gtctagta,4338595,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+CAP,,2,0,0,0,whiB6_c-82t,4338603,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,whiB6_g-42t,4338563,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,whiB6_R107C,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,whiB6_R54Q,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CAP,,2,0,0,0,whiB6_T51P,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CFZ,,1,0,0,0,mmpL5_D767N,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CFZ,,1,0,0,0,mmpL5_F696L,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CFZ,,1,0,0,0,mmpL5_I948V,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CFZ,,1,0,0,0,mmpL5_T794I,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CFZ,,2,0,0,0,Rv1979c_a-129g,2223293,Not assoc w R,WHO,1,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CFZ,mpt64_159,2,0,0,0,Rv1979c_c-389a,2223553,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+CFZ,,2,0,0,0,Rv1979c_D286G,,Not assoc w R,WHO,1,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embA_A201T,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embA_A813G,,Not assoc w R,WHO,0,0,2,1,0,1,,,,,Literature evidence (PMID 32143680),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embA_E951D,,Not assoc w R,WHO,0,0,2,1,1,1,,,,,Literature evidence (PMID 32143680),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embA_P383S,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embA_P639S,,Not assoc w R,WHO,0,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embA_P913S,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embA_T308A,,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embA_V206M,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embA_V468A,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embB_E378A,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embB_G156C,,Not assoc w R,WHO,0,0,2,1,0,1,,,,,Literature evidence (PMID 32143680),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embB_N13S,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embB_Q139H,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embB_R213Q,,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embB_S1054P,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embB_T1082A,,Not assoc w R,WHO,0,0,2,1,1,1,,,,,Literature evidence (PMID 32143680),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embB_V668I,,Not assoc w R,WHO,0,0,2,1,0,1,,,,,Literature evidence (PMID 32143680),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+EMB,aftA_1345,2,0,0,0,embC_-587_ins_18_a_atggccgccgccatcgggt,4239276,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+EMB,aftA_638,2,0,0,0,embC_a-20c,4239843,Not assoc w R,WHO,0,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embC_A774S,,Not assoc w R,WHO,0,0,1,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+EMB,aftA_611,2,0,0,0,embC_c-100t,4239763,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,aftA_247,2,0,0,0,embC_c-1193t,4238670,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,aftA_138,2,0,0,0,embC_c-1520a,4238343,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,Rv3789_c-97g,2,0,0,0,embC_c-4586g,4235277,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,aftA_456,2,0,0,0,embC_c-565t,4239298,Not assoc w R,WHO,1,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,aftA_448,2,0,0,0,embC_c-589g,4239274,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,aftA_344,2,0,0,0,embC_c-900t,4238963,Not assoc w R,WHO,0,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,aftA_171,2,0,0,0,embC_g-1419a,4238444,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,aftA_63,2,0,0,0,embC_g-1743a,4238120,Not assoc w R,WHO,0,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,aftA_554,2,0,0,0,embC_g-270a,4239593,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embC_L661I,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embC_N394D,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embC_R567H,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embC_R738Q,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embC_T270I,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embC_V104M,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,1,0,0,0,embC_V981L,,Not assoc w R,WHO,1,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,2,0,0,0,embR_A70S,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,2,0,0,0,embR_C110Y,,Not assoc w R,WHO,1,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,2,0,0,0,embR_c-207g,1417554,Not assoc w R,WHO,1,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,glf_a-99c,2,0,0,0,ubiA_a-3741c,4273574,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,2,0,0,0,ubiA_E149D,,Not assoc w R,WHO,1,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,2,0,0,0,ubiA_G268D,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+EMB,,2,0,0,0,ubiA_V49I,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,1,0,0,0,ahpC_g-88a,2726105,Not assoc w R,WHO,0,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,fabG1_G241G,1,0,0,0,inhA_c-40t,1674162,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,fabG1_P81A,1,0,0,0,inhA_c-522g,1673680,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,"Rv1482c_c-39t, fabG1_g-102a",1,0,0,0,inhA_g-864a,1673338,Not assoc w R,WHO,0,0,2,1,1,1,Not assoc w R,Not assoc w R,,,Previous WHO guidance,4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+INH,,,,,,inhA_T4I,,,,,,,,,,Not assoc w R,Not assoc w R,,,Previous WHO guidance,4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+INH,,1,0,0,0,inhA_V78A,,Not assoc w R,WHO,0,0,2,1,1,1,,,,,Literature evidence (PMID 32143680),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+INH,furA_A43V,2,0,0,0,katG_c-354t,2156465,Not assoc w R,WHO,1,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,furA_L133L,2,0,0,0,katG_c-85t,2156196,Not assoc w R,WHO,0,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,furA_L68F,2,0,0,0,katG_g-278c,2156389,Uncertain significance,ALL+WHO,0,0,0,0,0,0,Not assoc w R,Not assoc w R,,,Previous WHO guidance,4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+INH,,1,0,0,0,katG_R463L,,Not assoc w R,WHO,0,1,2,1,1,1,Not assoc w R,Not assoc w R,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,1,0,0,0,katG_V469L,,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,mshA_A187V,,Not assoc w R,WHO,0,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,mshA_D218A,,Not assoc w R,WHO,0,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,mshA_N111S,,Not assoc w R,WHO,0,1,2,1,0,1,Not assoc w R,Not assoc w R,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,mshA_R443H,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,ndh_G313R,,Not assoc w R,WHO,1,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,ndh_g-70t,2103112,Not assoc w R,WHO,0,0,2,1,0,1,,,,,Literature evidence (PMID 32143680),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,ndh_R268H,,Not assoc w R,WHO,0,0,2,1,0,1,,,,,Literature evidence (PMID 32143680),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,ndh_V18A,,Not assoc w R,WHO,0,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,1,0,Rv1258c_581_ins_1_t_tg,1406760,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+INH,,2,0,0,0,Rv1258c_E243A,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,Rv1258c_P414S,,Not assoc w R,WHO,0,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,Rv2752c_A273V,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,Rv2752c_A296V,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,Rv2752c_K435E,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,Rv2752c_M31I,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,Rv2752c_P123L,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+INH,,2,0,0,0,Rv2752c_V300A,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+KAN,,1,0,0,0,eis_V163I,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+KAN,,1,0,0,0,rrs_a1338c,1473183,Uncertain significance,ALL+WHO,0,0,0,0,0,0,Not assoc w R,Not assoc w R,,,Previous WHO guidance,4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+KAN,,1,0,0,0,rrs_a514c,1472359,Not assoc w R,WHO,0,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+KAN,,2,0,0,0,rrs_c-187t,1471659,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+KAN,,1,0,0,0,rrs_c492t,1472337,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+KAN,,1,0,0,0,rrs_c517t,1472362,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+KAN,,1,0,1,0,whiB7_246_ins_2_c_caa,3568434,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+KAN,,2,0,0,0,whiB7_c-178t,3568857,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+KAN,,1,0,0,0,whiB7_H79Q,,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+KAN,,1,0,0,0,whiB7_K80Q,,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+KAN,,1,0,0,0,whiB7_L42P,,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+KAN,,1,0,0,0,whiB7_R81H,,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+KAN,,1,0,0,0,whiB7_t-100c,3568779,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_A384V,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_A463S,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_A90G,,Uncertain significance,ALL+WHO,0,0,1,0,0,0,,,,,Literature evidence (PMID 28137812),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_c-34t,7268,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_E21Q,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_G247S,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_G668D,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_Q613E,,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_R252L,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_S95T,,Not assoc w R,WHO,1,1,1,1,1,1,Not assoc w R,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrA_T80A,,Uncertain significance,ALL+WHO,0,0,1,0,0,0,Not assoc w R,,,,Previous WHO guidance,4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrB_A403S,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,2,0,0,0,gyrB_c-165t,5075,Not assoc w R,WHO,1,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrB_M291I,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrB_P94L,,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LEV,,1,0,0,0,gyrB_V301L,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LZD,,1,0,0,0,rrl_c344t,1474001,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+LZD,,2,0,0,0,rrs_c-187t,1471659,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrA_A384V,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrA_A463S,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrA_A90G,,Uncertain significance,ALL+WHO,0,0,1,0,0,0,,,,,Literature evidence (PMID 28137812),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrA_c-34t,7268,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrA_E21Q,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrA_G247S,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrA_G668D,,Not assoc w R,WHO,0,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrA_S95T,,Not assoc w R,WHO,0,1,1,1,1,1,Not assoc w R,Not assoc w R,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrA_T80A,,Uncertain significance,ALL+WHO,0,0,1,0,0,0,,,,,Literature evidence (PMID 28137812),4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+MXF,,2,0,0,0,gyrB_c-165t,5075,Not assoc w R,WHO,1,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrB_M291I,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrB_P94L,,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+MXF,,1,0,0,0,gyrB_V301L,,Not assoc w R,WHO,1,1,1,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,1,0,0,0,clpC1_P796L,,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,1,0,0,0,clpC1_V63A,,Not assoc w R,WHO,0,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,Rv3603c_c-100t,2,0,0,0,panD_c-1937t,4046218,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,,,,,pncA_-125_del_1_cc_c,,,,,,,,,,Not assoc w R,Not assoc w R,,,Previous WHO guidance,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - indel
+PZA,,1,0,0,0,pncA_-2_ins_1_c_cg,2289243,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_A171V,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_A79T,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_A79V,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_D136N,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_E15G,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_g-33a,2289274,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_I6L,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,Not assoc w R,Not assoc w R,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_L35R,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,Not assoc w R,Not assoc w R,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_S66L,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_T114M,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_T168I,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,Rv2044c_100,2,0,0,0,pncA_t-60g,2289301,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_T87M,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,1,0,0,0,pncA_V21A,,Not assoc w R - Interim,ALL+WHO,0,0,0,0,0,0,,,,,,4) Not assoc w R - Interim,NOT TO BE CONSIDERED AS NEUTRAL - pncA-PZA relaxed thresholds
+PZA,,2,0,0,0,PPE35_L896S,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,2,0,0,0,PPE35_P670L,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,2,0,0,0,PPE35_P822S,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,2,0,0,0,PPE35_T712P,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,2,0,1,0,Rv1258c_262_del_1_cg_c,1407079,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+PZA,,2,0,1,0,Rv1258c_581_ins_1_t_tg,1406760,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+PZA,,2,0,0,0,Rv1258c_E243A,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,2,0,0,0,Rv1258c_P414S,,Not assoc w R,WHO,1,1,1,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,2,0,0,0,Rv3236c_A370T,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,Rv3237c_a-33g,2,0,0,0,Rv3236c_a-520g,3613636,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,2,0,0,0,Rv3236c_T102A,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+PZA,,2,0,0,0,Rv3236c_V151A,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,rpoA_E319K,,Not assoc w R,WHO,0,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,rpsD_150,2,0,0,0,rpoA_t-310a,3878817,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,1,0,0,0,rpoB_2546_ins_6_g_gcgagga,762352,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+RIF,,2,0,0,0,rpoB_a-261g,759546,Not assoc w R,WHO,0,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,1,0,0,0,rpoB_c-61t,759746,Not assoc w R,WHO,0,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,1,0,0,0,rpoB_E250G,,Not assoc w R,WHO,0,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,1,0,0,0,rpoB_E639D,,Not assoc w R,WHO,0,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,1,0,0,0,rpoB_I925V,,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+RIF,,1,0,0,0,rpoB_K944E,,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,1,0,0,0,rpoB_N381H,,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,1,0,0,0,rpoB_S388L,,Not assoc w R,WHO,0,1,2,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,1,0,0,0,rpoB_V695L,,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
+RIF,,2,0,0,0,rpoC_A172V,,Not assoc w R,WHO,1,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,rpoC_A621T,,Not assoc w R,WHO,1,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,rpoC_D271G,,Not assoc w R,WHO,0,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,rpoC_E1092D,,Not assoc w R,WHO,0,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,rpoC_E784Q,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,rpoC_G594E,,Not assoc w R,WHO,0,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,rpoC_P601L,,Not assoc w R,WHO,1,1,2,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,rpoC_P906A,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,rpoC_R69P,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,Rv2752c_A273V,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,Rv2752c_A296V,,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,Rv2752c_G161S,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,Rv2752c_K435E,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,Rv2752c_M31I,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,Rv2752c_P123L,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+RIF,,2,0,0,0,Rv2752c_V300A,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+STM,,1,0,0,0,gid_E92D,,Not assoc w R,WHO,0,1,1,1,1,1,Not assoc w R,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+STM,,1,0,0,0,gid_L16R,,Not assoc w R,WHO,1,1,1,1,1,1,Not assoc w R,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+STM,,,,,,gid_V110G,,,,,,,,,,Not assoc w R,,,,Previous WHO guidance,4) Not assoc w R - Interim,NEUTRAL MUTATION WHO CAT. 1
+STM,,1,0,0,0,gid_Y195H,,Not assoc w R,WHO,0,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+STM,Rv0681_194,2,0,0,0,rpsL_c-259t,781301,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+STM,,2,0,0,0,rpsL_t-165c,781395,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+STM,,2,0,0,0,rrs_c-187t,1471659,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+STM,,1,0,0,0,rrs_c492t,1472337,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+STM,,1,0,1,0,Rv1258c_581_ins_1_t_tg,1406760,Not assoc w R,WHO,0,1,0,1,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+STM,,2,0,0,0,whiB6_-68_del_1_ctccgagc_cgccgag,4338589,Not assoc w R,WHO,1,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+STM,,2,0,0,0,whiB6_-74_del_1_gc_g,4338595,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+STM,,2,0,0,0,whiB6_-74_del_1_gct_gt,4338595,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+STM,,2,0,0,0,whiB6_-74_del_1_gctctagtg_gtctagta,4338595,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+STM,,2,0,0,0,whiB6_R54Q,,Not assoc w R,WHO,0,1,0,1,0,1,,,,,,5) Not assoc w R,NEUTRAL MUTATION WHO CAT. 1
+STM,,1,0,1,0,whiB7_192_del_1_gc_g,3568488,Not assoc w R,WHO,1,1,0,1,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - indel
+STM,,1,0,0,0,whiB7_t-100c,3568779,Not assoc w R,WHO,0,0,0,0,1,1,,,,,,5) Not assoc w R,NOT TO BE CONSIDERED AS NEUTRAL - setD
