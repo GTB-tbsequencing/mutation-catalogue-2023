@@ -1,7 +1,7 @@
 ## This function executes the neutral algorithm, which identifies variants that should be considered as neutral
 ## If safe = FALSE, existing conversion files for mapping version 1 to version 2 are used directly (no checks!)
 ## The last option is only used for naming the (intermediate) output files, and should not normally be set
-neutralAlgorithm = function(masterTab, safe = FALSE, skipBDQfromSA = FALSE, NON_DATABASE_DIRECTORY="STATA DTA files", DATA_DIRECTORY="DATABASE EXTRACTION files", EXTRACTION_ID="2023-04-18T08_34_28.150000_jr_8b05f8aa02accfa629d731e456c23f728227d785f2352b09c1f8f098eab0d6c3") {
+neutralAlgorithm = function(masterTab, safe = FALSE, NON_DATABASE_DIRECTORY="STATA DTA files", DATA_DIRECTORY="DATABASE EXTRACTION files", EXTRACTION_ID="2023-04-18T08_34_28.150000_jr_8b05f8aa02accfa629d731e456c23f728227d785f2352b09c1f8f098eab0d6c3") {
   for (set in c("A", "B")) {
     if (set == "B") {
       ## Goal: remove the sample-drug pairs with a URM (unconditional resistance mutation; first, import the list
@@ -41,7 +41,7 @@ neutralAlgorithm = function(masterTab, safe = FALSE, skipBDQfromSA = FALSE, NON_
     ## Change the set name according to its letter
     colnames(masterTab)[ncol(masterTab)] = paste0("set", set)
     ## Extract the neutral variants into a separate file
-    curNeutral = extractNeutral(masterTab, set, skipBDQfromSA = skipBDQfromSA)
+    curNeutral = extractNeutral(masterTab, set)
     ## Remove generic auxiliary variables from the master table
     masterTab %<>%
       select(-PPV, -PPV_ub)
@@ -59,7 +59,7 @@ neutralAlgorithm = function(masterTab, safe = FALSE, skipBDQfromSA = FALSE, NON_
   masterTab %<>%
     mutate(setC = (setA | setB | lit_mutation))
   ## Extract the neutral variants into a separate file
-  curNeutral = extractNeutral(masterTab, "C", skipBDQfromSA = skipBDQfromSA)
+  curNeutral = extractNeutral(masterTab, "C")
   for (set in c("D", "E")) {
     ## filter out silent, tier 2 variants, and those in previous sets (C, D?), plus isolates containing a het
     subsetTab = masterTab %>%
@@ -82,7 +82,7 @@ neutralAlgorithm = function(masterTab, safe = FALSE, skipBDQfromSA = FALSE, NON_
     ## Change the set name according to its letter
     colnames(masterTab)[ncol(masterTab)] = paste0("set", set)
     ## Extract the neutral variants into a separate file
-    curNeutral = extractNeutral(masterTab, set, skipBDQfromSA = skipBDQfromSA)
+    curNeutral = extractNeutral(masterTab, set)
     ## Remove generic auxiliary variables from the master table
     masterTab %<>%
       select(-PPV, -PPV_ub)
@@ -102,7 +102,7 @@ neutralAlgorithm = function(masterTab, safe = FALSE, skipBDQfromSA = FALSE, NON_
   masterTab %<>%
     mutate(setF = (setC | setD | setE | version1))
   ## Extract the neutral variants into a separate file
-  curNeutral = extractNeutral(masterTab, "F", skipBDQfromSA = skipBDQfromSA)
+  curNeutral = extractNeutral(masterTab, "F")
   ## Extract the complete collection of marks for each variant-drug pair
   allSets = masterTab %>%
     group_by(drug, variant) %>%
@@ -110,7 +110,6 @@ neutralAlgorithm = function(masterTab, safe = FALSE, skipBDQfromSA = FALSE, NON_
     ungroup() %>%
     select(drug, variant, setA, setB, setC, lit_mutation, setD, setE, version1, setF)
   ## Record the complete collection of marks
-  ## write_csv(allSets, paste0("allVariantsWithSetMarks", ifelse(skipBDQfromSA, "_withoutSA", ""), ".csv"))
   masterTab
 }
 
@@ -156,7 +155,7 @@ computePPVs = function(inputTab, removeURM = TRUE, solo = FALSE, restrict = FALS
   }
 }
 
-extractNeutral = function(inputTab, setName, skipBDQfromSA = FALSE) {
+extractNeutral = function(inputTab, setName) {
   ## Create the full variable name
   varName = paste0("set", setName)
   ## Extract the corresponding variable
@@ -178,7 +177,7 @@ extractNeutral = function(inputTab, setName, skipBDQfromSA = FALSE) {
       select(drug, variant)
   }
   ## Save the set into a file
-  outFilename = paste0("neutral_mutations_WHO_", ifelse(skipBDQfromSA, "withoutSA_", ""), setName, ".csv")
+  outFilename = paste0("neutral_mutations_WHO_", setName, ".csv")
   write_csv(neutralTab, outFilename)
   neutralTab
 }

@@ -11,12 +11,11 @@ conflicts_prefer(dplyr::filter)
 ## If fast = TRUE, then only the MAIN analysis (containing the WHO and ALL datasets, not CC[ATU]) gets processed.
 ## If correct_all = TRUE, then the analyses correct for the total number of variants considered; if it is FALSE,
 ## they only correct for the number of variants classified S or R, i.e. appear as a SOLO in at least one isolate.
-## If skipBDQfromSA = TRUE, then a specified subset of samples are not carried forward for Bedaquiline analysis. 
 ## If LoF = TRUE, then pooled loss-of-function mutations are also considered hypotheses for the FDR corrections.
 ## If safe = TRUE (slow option), then a full conversion of variants from V1 to V2 is also performed from scratch.
 ## If orphanByDrug = TRUE, then the listing of orphan genotypes is stratified by the drug; this is more accurate.
 ## The remaining options are used to specify the relevant directories and should be left at their default values.
-mainDriver = function(fast = FALSE, correct_all = TRUE, skipBDQfromSA = FALSE, LoF = TRUE, safe = TRUE, orphanByDrug = TRUE,
+mainDriver = function(fast = FALSE, correct_all = TRUE, LoF = TRUE, safe = TRUE, orphanByDrug = TRUE,
     EXTRACTION_ID = "2023-04-25T06_00_10.443990_jr_b741dc136e079fa8583604a4915c0dc751724ae9880f06e7c2eacc939e086536", 
     OUTPUT_DIRECTORY = paste0("Results/", EXTRACTION_ID), SCRIPT_LOCATION_DIR = "SOLOport/",
     DATA_DIRECTORY = "SOLO Algorithm Input files/DATABASE EXTRACTION files/", NON_DATABASE_DIRECTORY = "SOLO Algorithm Input files/STATA DTA files/") {
@@ -29,7 +28,6 @@ mainDriver = function(fast = FALSE, correct_all = TRUE, skipBDQfromSA = FALSE, L
          print(paste("Sourcing", script))
          source(script)
   }
-  OUTPUT_DIRECTORY = str_replace(OUTPUT_DIRECTORY, "Results", ifelse(skipBDQfromSA, "Results_withoutSA", "Results"))
   dir.create(OUTPUT_DIRECTORY, recursive = TRUE)
   OUTPUT_DIRECTORY %<>%
     normalizePath()
@@ -79,18 +77,6 @@ mainDriver = function(fast = FALSE, correct_all = TRUE, skipBDQfromSA = FALSE, L
   stopifnot(anyDuplicated(allPhenotypes %>% dplyr::filter(category_phenotype %in% c("WHO", "ALL")) %>% select(drug, sample_id)) == 0)
   ## Merge the genotypes and the phenotypes after separating the latter by phenotypic category group
   fullDataset = mergeGenoPheno(allGenotypes, allPhenotypes, phenoGroups = PHENO_GROUPS)
-  ## Alternative based on a bedaquiline issue: if skipBDQfromSA is TRUE, remove the Bedaquiline entries corresponding to a list of sample_id's
-  if (skipBDQfromSA) {
-    curDir = getwd()
-    setwd(DATA_DIRECTORY)
-    badIDs = read_csv("query_result_2023-04-13T15_28_45.986784Z.csv", show_col_types = FALSE, guess_max = Inf) %>%
-      pull(`Sample ID`)
-    for (name in names(fullDataset)) {
-      fullDataset[[name]] %<>%
-        filter(!(sample_id %in% badIDs & drug == "Bedaquiline"))
-    }
-    setwd(curDir)
-  }
   ## Quality control based on a sanity check: S isolates with one of specific variant-drug combinations fail QC
   ## For bookkeeping purposes we keep additional columns even though only the sample_ids are used for exclusion
   samplesToExclude = fullDataset[["MAIN"]] %>%
@@ -111,11 +97,11 @@ mainDriver = function(fast = FALSE, correct_all = TRUE, skipBDQfromSA = FALSE, L
   if (safe) {
     WHODataMarked = WHOData %>%
       dplyr::filter(!(sample_id %in% samplesToExclude$sample_id)) %>%
-      neutralAlgorithm(safe = safe, skipBDQfromSA = skipBDQfromSA, NON_DATABASE_DIRECTORY = str_remove(NON_DATABASE_DIRECTORY, "/$"), 
+      neutralAlgorithm(safe = safe, NON_DATABASE_DIRECTORY = str_remove(NON_DATABASE_DIRECTORY, "/$"), 
                        DATA_DIRECTORY = str_remove(DATA_DIRECTORY, "/$"), EXTRACTION_ID = str_remove(EXTRACTION_ID, "/$"))
   }
   ## Extract the prepared list of all neutral mutations
-  allNeutrals = read_csv(paste0("neutral_mutations_WHO_", ifelse(skipBDQfromSA, "withoutSA_", ""), "F.csv"), 
+  allNeutrals = read_csv("neutral_mutations_WHO_F.csv", 
                          guess_max = Inf, show_col_types = FALSE) %>%
     mutate(neutral = TRUE)
   ## Now identify the neutral variants and mark these, as well as other relevant ones, in the entire dataset
@@ -158,7 +144,7 @@ mainDriver = function(fast = FALSE, correct_all = TRUE, skipBDQfromSA = FALSE, L
     }
   }
   ## Save the clean version of the input data for downstream analysis of the catalogue's performance on itself 
-  write_csv(fullDataset[["MAIN"]], paste0("CompleteDataset", ifelse(skipBDQfromSA, "withoutSA_", ""), ".csv"))
+  write_csv(fullDataset[["MAIN"]], "CompleteDataset.csv")
   ## Now process the entire dataset in the specified order; additionally perform each of the 3 types of pooling
   for (name in c("WHO", "MAIN", "CC", "ATU")) {
     if (!fast || name %in% c("MAIN", "WHO")) {
@@ -301,7 +287,7 @@ mainDriver = function(fast = FALSE, correct_all = TRUE, skipBDQfromSA = FALSE, L
         fullDataset[[paste0(name, "_", ifelse(!POOLED, "unpooled", pool))]] = curSet
       }
       ## Save the basic mutation-wise statistics into a file
-      curFilename = paste0("Stats_", name, ifelse(skipBDQfromSA, "_withoutSA", ""), ifelse(LoF, "_withLoFs", ""), ".csv")
+      curFilename = paste0("Stats_", name, ifelse(LoF, "_withLoFs", ""), ".csv")
       write_csv(fullStats, paste0("Basic_", curFilename))
       if (!fast) {
         ## Now compute the derived statistics and save them into a file
@@ -312,10 +298,9 @@ mainDriver = function(fast = FALSE, correct_all = TRUE, skipBDQfromSA = FALSE, L
     }
   }
   print("Computing the final grades of all mutations")
-  finalResult = gradeMutations(skipBDQfromSA = skipBDQfromSA, LoF = LoF, NON_DATABASE_DIRECTORY = str_remove(NON_DATABASE_DIRECTORY, "/$"))
+  finalResult = gradeMutations(LoF = LoF, NON_DATABASE_DIRECTORY = str_remove(NON_DATABASE_DIRECTORY, "/$"))
   gradedFilename = paste0(paste("Final_graded_algorithm_catalogue", Sys.Date(), "Leonid", sep = "_"), 
-                          ifelse(skipBDQfromSA, "_withoutSA", ""), ifelse(LoF, "_withLoFs", ""), ".csv")
-  ## finalResult = prepareOutputForPaolo(gradedFilename, skipBDQfromSA = skipBDQfromSA, LoF = LoF)
+                          ifelse(LoF, "_withLoFs", ""), ".csv")
   setwd(paste(str_remove(DATA_DIRECTORY, "/$"), str_remove(EXTRACTION_ID, "/$"), "orphan_genotypes/", sep = "/"))
   orphanTab = read_csv(list.files()[1], guess_max = Inf, show_col_types = FALSE) %>%
     rename(gene = 'resolved_symbol', mutation = 'variant_category', effect = 'predicted_effect', drug = 'drug_name') %>%
