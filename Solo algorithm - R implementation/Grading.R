@@ -1,7 +1,7 @@
- gradeMutations = function(skipBDQfromSA = FALSE, LoF = TRUE, NON_DATABASE_DIRECTORY = NULL) {
+ gradeMutations = function(LoF = TRUE, NON_DATABASE_DIRECTORY = NULL) {
   ## Prepare the master variant table, compute genes and mutations, and conduct a basic consistency check
-  Tab0 = read_csv(paste0("Stats_WHO" , ifelse(skipBDQfromSA, "_withoutSA", ""), ifelse(LoF, "_withLoFs", ""), ".csv"), guess_max = Inf, show_col_types = FALSE)
-  Tab1 = read_csv(paste0("Stats_MAIN", ifelse(skipBDQfromSA, "_withoutSA", ""), ifelse(LoF, "_withLoFs", ""), ".csv"), guess_max = Inf, show_col_types = FALSE)
+  Tab0 = read_csv(paste0("Stats_WHO" , ifelse(LoF, "_withLoFs", ""), ".csv"), guess_max = Inf, show_col_types = FALSE)
+  Tab1 = read_csv(paste0("Stats_MAIN", ifelse(LoF, "_withLoFs", ""), ".csv"), guess_max = Inf, show_col_types = FALSE)
   stopifnot(all(Tab0$datasets == "WHO"))
   stopifnot(all(Tab1$datasets == "ALL"))
   stopifnot(nrow(Tab0 %>% anti_join(Tab1, by = c("variant", "drug"))) == 0)
@@ -161,7 +161,7 @@
   inputTab %<>%
     mutate(Initial = GRADES[Initial], Final = GRADES[Final])
   write_csv(inputTab, paste0(paste("Final_graded_algorithm_catalogue", Sys.Date(), "Leonid", sep = "_"), 
-                             ifelse(skipBDQfromSA, "_withoutSA", ""), ifelse(LoF, "_withLoFs", ""), ".csv"))
+                             ifelse(LoF, "_withLoFs", ""), ".csv"))
   inputTab
 }
 

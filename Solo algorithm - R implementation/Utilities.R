@@ -266,7 +266,7 @@ convertToLogical = function(x) {
   output
 }
 
-prepareOutputForPaolo = function(inputFile, skipBDQfromSA = FALSE, LoF = FALSE) {
+prepareOutputForPaolo = function(inputFile, LoF = FALSE) {
   Tabs = vector("list", 2)
   Names = c("WHO", "ALL")
   inputTab = read_csv(inputFile, show_col_types = FALSE, guess_max = Inf) %>%
@@ -284,6 +284,6 @@ prepareOutputForPaolo = function(inputFile, skipBDQfromSA = FALSE, LoF = FALSE) 
     Tabs[[index]] = curTab
   }
   finalTab = full_join(Tabs[[1]], Tabs[[2]], by = c("WHO_drug" = "ALL_drug", "WHO_variant" = "ALL_variant"))
-  write_csv(finalTab, paste0("Merged_Graded_Stats_", Sys.Date(), ifelse(skipBDQfromSA, "_withoutSA", ""), ifelse(LoF, "_withLoFs", ""), ".csv"))
+  write_csv(finalTab, paste0("Merged_Graded_Stats_", Sys.Date(), ifelse(LoF, "_withLoFs", ""), ".csv"))
   finalTab
 }
