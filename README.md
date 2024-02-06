@@ -1,4 +1,17 @@
+# FINAL MUTATION CATALOGUE 2023 RESULT FILES - FEB 2024 UPDATES
+Output files, including the VCF and the Excel files have been updaptes as of February 2024.
+We are grateful to the users who reported a small issue with multiple consecutive nucleotide variants and synonymous model features.
+
+Following that report the VCF and the Genomic_coordinates sheet of the Excel file have been updated.
+The main results of the catalogue Catalogue_master_file remain completely unchanged.
+
+The issue was relatively minor and will not affect you if your pipeline does not consider multiple consecutive nucleotide variants nor synonymous changes.
+If you need more details about the issue, please refer to the PDF presentation available in the Final Result Files folder and reach out to tbsequencing@who.int
+
+Previous files remain available by browsing the history of git commits, for reference.
+
 # FINAL MUTATION CATALOGUE 2023 RESULT FILES
+
 Please find in the folder *Final Result Files* the main output of the mutation catalogue initiative, 2023 version.
 This includes:
 1. An Excel file with the complete data generated, including variant grades and all statistical metrics per variant
