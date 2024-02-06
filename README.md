@@ -1,8 +1,7 @@
 # FINAL MUTATION CATALOGUE 2023 RESULT FILES - FEB 2024 UPDATES
-Output files, including the VCF and the Excel files have been updaptes as of February 2024.
+Output files, including the VCF and the Excel files have been updapted as of February 2024.
 We are grateful to the users who reported a small issue with multiple consecutive nucleotide variants and synonymous model features.
 
-Following that report the VCF and the Genomic_coordinates sheet of the Excel file have been updated.
 The main results of the catalogue Catalogue_master_file remain completely unchanged.
 
 The issue was relatively minor and will not affect your pipeline if it does not consider multiple consecutive nucleotide variants nor synonymous changes.
