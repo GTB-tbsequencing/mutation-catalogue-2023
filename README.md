@@ -5,8 +5,8 @@ We are grateful to the users who reported a small issue with multiple consecutiv
 Following that report the VCF and the Genomic_coordinates sheet of the Excel file have been updated.
 The main results of the catalogue Catalogue_master_file remain completely unchanged.
 
-The issue was relatively minor and will not affect you if your pipeline does not consider multiple consecutive nucleotide variants nor synonymous changes.
-If you need more details about the issue, please refer to the PDF presentation available in the Final Result Files folder and reach out to tbsequencing@who.int
+The issue was relatively minor and will not affect your pipeline if it does not consider multiple consecutive nucleotide variants nor synonymous changes.
+For more details about the issue, please refer to the PDF presentation available in the Final Result Files folder and reach out to tbsequencing@who.int
 
 Previous files remain available by browsing the history of git commits, for reference.
 
