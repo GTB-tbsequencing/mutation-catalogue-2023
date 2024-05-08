@@ -1,3 +1,15 @@
+# FINAL MUTATION CATALOGUE 2023 RESULT FILES - MAY 2024 UPDATES
+Output files, including the VCF and the Excel files have been updapted as of May 2024.
+We are grateful to @HillJamie who reported the issue with multiple consecutive nucleotide variants and synonymous model features.
+When investigating the issue, we found another problem on some variants impacting terminal stop codon. Both issues have been fixed.
+
+The main results of the catalogue Catalogue_master_file remain completely unchanged.
+
+The issue was relatively minor and will not affect your pipeline if it does not consider multiple consecutive nucleotide variants nor synonymous changes.
+For more details about the issue please reach out to tbsequencing@who.int
+
+Previous files remain available by browsing the history of git commits, for reference.
+
 # FINAL MUTATION CATALOGUE 2023 RESULT FILES - FEB 2024 UPDATES
 Output files, including the VCF and the Excel files have been updapted as of February 2024.
 We are grateful to the users who reported a small issue with multiple consecutive nucleotide variants and synonymous model features.
