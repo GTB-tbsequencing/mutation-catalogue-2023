@@ -14,31 +14,6 @@ from biosql_gene_views import *
 
 # Reimplementation of the Materialized View "ranked annotation" in spark
 
-# CREATE MATERIALIZED VIEW "genphensql"."ranked_annotation" AS 
-# SELECT
-#   "variant_to_annotation"."variant_id",
-#   "annotation_id",
-#   x."gene_name",
-#   "annotation"."predicted_effect",
-#   "annotation"."hgvs_value",
-#   "annotation"."distance_to_reference",
-#   RANK() OVER(
-#     PARTITION BY "variant_id" ORDER BY CASE
-#      WHEN (("predicted_effect" not in ('synonymous_variant', 'initiator_codon_variant', 'stop_retained_variant') AND "protein_id"."protein_db_crossref_id" IS NOT NULL) OR ("predicted_effect"='non_coding_transcript_exon_variant')) THEN 1
-#      WHEN ("predicted_effect" in ('synonymous_variant', 'initiator_codon_variant', 'stop_retained_variant') AND locustag1."locus_tag_name" IS NOT NULL) THEN 2 
-#      WHEN "predicted_effect" IN ('upstream_gene_variant', 'downstream_gene_variant') THEN "distance_to_reference"+2
-#      END
-#   ) AS "rank"
-# FROM "variant_to_annotation"
-# NATURAL JOIN "annotation"
-# LEFT JOIN "locus_tag" locustag1 ON locustag1."gene_db_crossref_id"="annotation"."reference_db_crossref_id"
-# LEFT JOIN "protein_id" ON "protein_id"."protein_db_crossref_id"="annotation"."reference_db_crossref_id"
-# INNER JOIN (
-#   SELECT locustag2."gene_db_crossref_id", COALESCE("gene_name"."gene_name", locustag2."locus_tag_name") "gene_name"
-#   FROM "locus_tag" locustag2
-#   LEFT JOIN "gene_name" ON "gene_name"."gene_db_crossref_id"=locustag2."gene_db_crossref_id"
-#   ) x ON x."gene_db_crossref_id"=COALESCE("protein_id"."gene_db_crossref_id", locustag1."gene_db_crossref_id");
-
 def ranked_annotation(variant_to_annotation, annotation, locus_tag, protein_id, resolved_symbol):
     ranked_annotation = (
         variant_to_annotation
@@ -211,7 +186,23 @@ def formatted_annotation_per_gene(variant_to_annotation, annotation, db_crossref
             F.col("annotation1.predicted_effect"),
             F.col("annotation1.hgvs_value").alias("nucleotidic_annotation"),
             F.col("protein_annotation.hgvs_value").alias("proteic_annotation"),
-            F.col("annotation1.distance_to_reference").alias("distance_to_reference"),
+        # Update Dec 2023
+        # We needed to sanitize the distance to reference for some missense variants
+        # Indeed, for MCNV, the distance given by default by snpEff is the start of the MCNV (obvious)
+        # Not the location of the actual missense (eg if the MCNV starts with a synonymous and a missense on the next codon)
+        # So we extract the position from the proteic annotation and simply multiply by 3.
+            F.when(
+                F.col("annotation1.hgvs_value").rlike("c\.[0-9]+_[0-9]+del[AGCT]+ins[AGCT]+")
+                    & F.col("protein_annotation.hgvs_value").rlike("p\.[A-Z][a-z]{2}[0-9]+[A-Z][a-z]{2}")
+                    & (F.col("annotation1.predicted_effect")=="missense_variant"),
+                F.regexp_extract(
+                    F.col("protein_annotation.hgvs_value"),
+                    r"p\.[A-Z][a-z]{2}([0-9]+)[A-Z][a-z]{2}",
+                    1
+                ).cast("long")*3
+            )
+            .otherwise(F.col("annotation1.distance_to_reference"))
+            .alias("distance_to_reference"),
         )
     )
     return(fapg)
@@ -263,7 +254,7 @@ def sanitize_synonymous_variant(formatted_annotation_per_gene, tier, multiple_va
         .join(
             sanitized,
             on=F.col("sanitized.variant_id")==F.col("mvd.mnv_id"),
-            how="inner"        
+            how="inner"
         )
         .join(
             formatted_annotation_per_gene.alias("fapg1"),
@@ -282,11 +273,102 @@ def sanitize_synonymous_variant(formatted_annotation_per_gene, tier, multiple_va
     )
     return(correct_syn_mnv)
 
+# I think I need to sanitize similarly MNVs
+# Because if one MNVs is associated with more than one missense
+# I can't count on a simple join on different distance to reference to exclude irrelevant synonymous changes
+# The synonymous will be join with missense on other codons, but it still irrelevant...
+def missense_codon_list(formatted_annotation_per_gene, variant, tier):
+    mnvs_to_missense = (
+        formatted_annotation_per_gene.alias("fapg")
+        .join(
+            tier,
+            on="gene_db_crossref_id",  
+            how="left_semi"
+        )
+        .join(
+            variant.alias("variant"),
+            on="variant_id",
+            how="inner"
+        )
+        .where(
+            (F.col("predicted_effect")=='missense_variant')
+                & F.col("nucleotidic_annotation").rlike("c\.[0-9]+_[0-9]+del[AGCT]+ins[AGCT]+")
+                & F.col("proteic_annotation").rlike("p\.[A-Z][a-z]{2}[0-9]+[A-Z][a-z]{2}")
+                & (F.length("reference_nucleotide")==F.length("alternative_nucleotide"))            
+        )
+        .select(
+            F.col("variant_id"),
+            F.col("position"),
+            F.col("reference_nucleotide"),
+            F.col("alternative_nucleotide"),
+            F.col("gene_db_crossref_id"),
+            F.col("proteic_annotation"),
+            F.floor(1+(F.col("distance_to_reference")-1)/3).alias("codon"),
+        )
+        .groupBy(
+            F.col("variant_id"),
+            F.col("gene_db_crossref_id"),
+            # F.col("position"),
+            # F.col("reference_nucleotide"),
+            # F.col("alternative_nucleotide"),
+        )
+        .agg(
+            F.countDistinct("proteic_annotation").alias("count_missense"),
+            F.first("gene_db_crossref_id"),
+            F.concat_ws(
+                "; ",
+                F.collect_set(F.col("proteic_annotation"))
+            ).alias("mutations"),
+            F.collect_set(F.col("codon")).alias("all_codons_missense")
+        )
+        # .alias("mnv_to_missense")
+    )
+
+    return(
+        mnvs_to_missense
+        # .select(
+        #     F.col("variant_id"),
+        #     F.col("gene_db_crossref_id"),
+        #     F.col("all_codons_missense"),
+        # )
+    )
+
+    # selected_syn = (
+    #     multiple_variant_decomposition.alias("mvd")
+    #     .join(
+    #         formatted_annotation_per_gene.alias("fapg2"),
+    #         on=(F.col("mvd.snv_id")==F.col("fapg2.variant_id"))
+    #             & (F.col("fapg2.predicted_effect")=="synonymous_variant"),
+    #         how="inner"
+    #     )
+    #     .alias("synonymous")
+    # )
+
+    # mnvs_missense_syn = (
+    #     mnvs_to_missense
+    #     .join(
+    #         selected_syn,
+    #         on=(F.col("synonymous.mnv_id")==F.col("mnv_to_missense.variant_id"))
+    #             & ~F.array_contains("all_codons_missense", F.floor(1+(F.col("synonymous.distance_to_reference")-1)/3)),
+    #         how="left"
+    #     )
+    # )
+
+    # return(mnvs_missense_syn)
+
 # Beautiful (actually awful) query that associates variant_id to its variant category on the gene of interest first
 # Variants leading to more than one missense mutation (on different codons) are already handled by decomposition of the SnpEff annotation 
 # in the UpdateAnnotation ETL StepFunction pipeline, by load_annotation_variants.py
 # However, multiple mutation on the same codons prevents us from using straightforwardly the MVD
-def tiered_drug_variant_categories(formatted_annotation_per_gene, corrected_synonymous_mnv, tier, variant, multiple_variant_decomposition, promoter_distance):
+def tiered_drug_variant_categories(
+        formatted_annotation_per_gene,
+        corrected_synonymous_mnv,
+        tier,
+        variant,
+        multiple_variant_decomposition,
+        promoter_distance,
+        missense_codon_list
+    ):
     variant_categories = (
         formatted_annotation_per_gene.alias("fapg1")
         .join(
@@ -308,12 +390,17 @@ def tiered_drug_variant_categories(formatted_annotation_per_gene, corrected_syno
         .join(
             multiple_variant_decomposition.alias("mvd"),
             on=(F.col("fapg1.variant_id")==F.col("mvd.mnv_id"))
-            & F.col("fapg1.predicted_effect").isin(
-                'upstream_gene_variant',
-                'synonymous_variant',
-                'missense_variant',
-                'non_coding_transcript_exon_variant',
-            ),
+                & F.col("fapg1.predicted_effect").isin(
+                    'upstream_gene_variant',
+                    'synonymous_variant',
+                    'missense_variant',
+                    'non_coding_transcript_exon_variant',
+                ),
+            how="left",
+        )
+        .join(
+            missense_codon_list.alias("missense"),
+            on=["variant_id", "gene_db_crossref_id"],
             how="left",
         )
         # Join again with variant to get the position of the mvd
@@ -353,8 +440,12 @@ def tiered_drug_variant_categories(formatted_annotation_per_gene, corrected_syno
                 |
                 (
                     (F.col("fapg1.predicted_effect")=="missense_variant")
-                    & F.col("fapg2.predicted_effect").isin("synonymous_variant", "stop_retained_variant", "initiator_codon_variant")
-                    & (F.floor((F.col("fapg1.distance_to_reference")-1)/3)!=F.floor((F.col("fapg2.distance_to_reference")-1)/3))
+                    & F.col("fapg2.predicted_effect").isin(
+                        "synonymous_variant",
+                        "stop_retained_variant",
+                        "initiator_codon_variant"
+                        )
+                    & ~F.array_contains("missense.all_codons_missense", F.floor(1+(F.col("fapg2.distance_to_reference")-1)/3))
                 )
             ),
             how="left",
@@ -374,7 +465,11 @@ def tiered_drug_variant_categories(formatted_annotation_per_gene, corrected_syno
                 F.col("fapg1.predicted_effect").rlike(".*frameshift.*") & F.col("fapg1.proteic_annotation").rlike("p\.Ter[0-9]+fs"),
                 F.regexp_replace(F.col("fapg1.proteic_annotation"), "fs", "ext*?")
             )
-            # We rank then 1. stop_lost, 2. frameshift, stop_gained, start_lost, 3. initiator_codon_variant
+            # We rank then 1. stop_lost+frameshift 2. stop_lost, 3. frameshift, stop_gained, start_lost, 4. initiator_codon_variant
+            .when(
+                F.col("fapg1.predicted_effect").rlike(".*stop_lost.*") & F.col("fapg1.predicted_effect").rlike(".*frameshift.*"),
+                F.col("fapg1.nucleotidic_annotation")
+            )
             .when(
                 F.col("fapg1.predicted_effect").rlike(".*stop_lost.*"),
                 F.col("fapg1.proteic_annotation")
@@ -384,9 +479,17 @@ def tiered_drug_variant_categories(formatted_annotation_per_gene, corrected_syno
                 F.col("fapg1.predicted_effect").rlike(".*start_lost.*"),
                 F.lit("p.Met1?")
             )
+            # Stop gained is proteic annotation
+            # Sanitizing stop gained that are also frameshifts
+            # We keep the stop gained annotation
             .when(
-                F.col("fapg1.predicted_effect").rlike(".*(frameshift|stop_gained).*"),
-                F.col("fapg1.proteic_annotation")
+                F.col("fapg1.predicted_effect").rlike(".*stop_gained.*"),
+                F.regexp_replace(F.col("fapg1.proteic_annotation"), "fs$", "*")
+            )
+            # frameshift is now nucleic annotation
+            .when(
+                F.col("fapg1.predicted_effect").rlike(".*frameshift.*"),
+                F.col("fapg1.nucleotidic_annotation")
             )
             # Sanitize initiator codon variant so that the category is different from the start_lost
             # Getting the nucleotidic annotation for initiator codon variants
@@ -413,7 +516,11 @@ def tiered_drug_variant_categories(formatted_annotation_per_gene, corrected_syno
             # Then extract FAPG for variants leading to mis+syn
             .when(
                 (F.col("fapg1.predicted_effect")=="missense_variant")
-                & F.col("fapg2.predicted_effect").isin("synonymous_variant", "stop_retained_variant", "initiator_codon_variant"),
+                & F.col("fapg2.predicted_effect").isin(
+                    "synonymous_variant",
+                    "stop_retained_variant",
+                    "initiator_codon_variant"
+                ),
                 F.col("fapg2.nucleotidic_annotation")
             )
             .otherwise(F.col("fapg1.proteic_annotation"))
@@ -447,6 +554,11 @@ def tiered_drug_variant_categories(formatted_annotation_per_gene, corrected_syno
             .when(
                 F.col("fapg1.predicted_effect").rlike(".*frameshift.*") & F.col("variant_category").rlike("p\.Ter[0-9]+ext\*\?"),
                 F.lit("stop_lost")
+            )
+            # Stop gained has priority over frameshift
+            .when(
+                F.col("fapg1.predicted_effect").rlike(".*stop_gained.*"),
+                F.lit("stop_gained")
             )
             .when(
                 F.col("fapg1.predicted_effect").rlike(".*frameshift.*"),
@@ -513,8 +625,7 @@ def tiered_drug_variant_categories(formatted_annotation_per_gene, corrected_syno
                 )
                 .orderBy(
                     F.when(F.col("curated_effect")=="lof", 1)
-                    .when(F.col("curated_effect")=="missense_variant", 2)
-                    .when(F.col("curated_effect").isin("synonymous_variant", "stop_retained_variant", "initiator_codon_variant"), 2)
+                    .when(F.col("curated_effect").isin("missense_variant", "synonymous_variant", "stop_retained_variant", "initiator_codon_variant"), 2)
                     .when(F.col("curated_effect")=="non_coding_transcript_exon_variant", 3)
                     .otherwise(4)
                 )
@@ -576,6 +687,36 @@ if __name__=="__main__":
 
     protein_id = protein_id_view(dbxref, sqv, sdc).alias("protein_id")
 
+    location = glueContext.create_data_frame.from_catalog(database = args["glue_database_name"], table_name = "postgres_biosql_location")
+
+
+
+    end_positive_genes = (
+        location
+        .join(
+            sdc.alias("sdc"),
+            "seqfeature_id",
+            "inner"
+        )
+        .join(
+            protein_id.alias("prot"),
+            on=F.col("prot.gene_db_crossref_id")==F.col("sdc.dbxref_id"),
+            how="inner"
+        )
+        .where(
+            F.col("strand")==1
+        )
+        .select(
+            F.col("gene_db_crossref_id"),
+            (F.col("end_pos")-2).alias("end_pos"),
+        )
+        .distinct()
+    )
+
+    print(end_positive_genes.count())
+
+    print(end_positive_genes.show())
+
     annot = glueContext.create_data_frame.from_catalog(database = args["glue_database_name"], table_name = "postgres_genphensql_annotation")
 
     vta = glueContext.create_data_frame.from_catalog(database = args["glue_database_name"], table_name = "postgres_genphensql_variant_to_annotation")
@@ -586,13 +727,25 @@ if __name__=="__main__":
 
     tier = glueContext.create_data_frame.from_catalog(database = args["glue_database_name"], table_name = "postgres_genphensql_gene_drug_resistance_association").alias("tier")
 
+    s3 = boto3.resource('s3')
+
+    # csv_buffer = io.BytesIO()
+    # fapg.join(tier, "gene_db_crossref_id", "left_semi").toPandas().to_csv(csv_buffer, index=False)
+    # s3.Object("aws-glue-assets-231447170434-us-east-1", args["JOB_NAME"]+"/"+d+"_"+args["JOB_RUN_ID"]+"/fapg.csv").put(Body=csv_buffer.getvalue())
+
     variant = glueContext.create_data_frame.from_catalog(database = args["glue_database_name"], table_name = "postgres_genphensql_variant")
 
     mvd = multiple_variant_decomposition(variant).alias("mvd")
     
     san = sanitize_synonymous_variant(fapg, tier, mvd)
 
-    var_cat = tiered_drug_variant_categories(fapg, san, tier, variant, mvd, promoter_distance).alias("variant_category")
+    mnvs_miss = missense_codon_list(fapg, variant, tier)    
+
+    # csv_buffer = io.BytesIO()
+    # mnvs_miss.toPandas().to_csv(csv_buffer, index=False)
+    # s3.Object("aws-glue-assets-231447170434-us-east-1", args["JOB_NAME"]+"/"+d+"_"+args["JOB_RUN_ID"]+"/mnvs_miss.csv").put(Body=csv_buffer.getvalue())
+
+    var_cat = tiered_drug_variant_categories(fapg, san, tier, variant, mvd, promoter_distance, mnvs_miss)
 
     seqfeature = glueContext.create_data_frame.from_catalog(database = args["glue_database_name"], table_name = "postgres_biosql_seqfeature").alias("seqfeature")
 
@@ -605,104 +758,122 @@ if __name__=="__main__":
     gene_locus_tag = merge_gene_locus_view(gene_name, locus_tag).alias("gene_locus_tag")
 
 
-#     variant_mapping = (
-#         var_cat
-#         .drop(
-#             "position"
-#         )
-#         .join(
-#             variant.alias("variant1"),
-#             "variant_id",
-#             "inner"
-#         )
-#         .join(
-#             locus_tag,
-#             "gene_db_crossref_id",
-#             "inner"
-#         )
-#         .join(
-#             gene_locus_tag,
-#             "gene_db_crossref_id",
-#             "inner"
-#         )
-#         .select(
-#             F.concat_ws(
-#                 "_",
-#                 F.col("resolved_symbol"),
-#                 F.col("variant_category")
-#             ).alias("variant"),
-#             F.col("resolved_symbol"),
-#             F.col("variant_category"),
-#             F.col("predicted_effect"),
-#             F.col("variant_category.variant_id"),
-#             F.col("variant1.chromosome"),
-#             F.col("variant1.position"),
-#             F.col("reference_nucleotide"),
-#             F.col("alternative_nucleotide"),
-#         )
-#         .distinct()
-#         .sample(fraction=float(args["sample_fraction"]))
-#         .toPandas()
-#     )
-
-
-#     s3 = boto3.resource('s3')
-
-
-# #    writer = pandas.ExcelWriter(output, engine="openpyxl")
-
-    
-#     #writer.save()
-    
-#     #data = output.getvalue()
-
-#     #s3.Bucket('aws-glue-assets-231447170434-us-east-1').put_object(Key=args["JOB_NAME"]+"/"+d+"_"+args["JOB_RUN_ID"]+"/variant_mapping.csv", Body=data)
-
-#     csv_buffer = io.BytesIO()
-#     variant_mapping.to_csv(csv_buffer, index=False)
-#     s3.Object("aws-glue-assets-231447170434-us-east-1", args["JOB_NAME"]+"/"+d+"_"+args["JOB_RUN_ID"]+"/variant_mapping.csv").put(Body=csv_buffer.getvalue())
-
-
-#     fill_new_table = (
-#         DynamicFrame.fromDF(
-#             var_cat
-#             .select(
-#                 F.col("variant_id"),
-#                 F.col("gene_db_crossref_id"),
-#                 F.col("predicted_effect"),
-#                 F.col("variant_category.variant_category"),
-#                 F.col("distance_to_reference"),
-#             )
-#             .alias("")
-#             .distinct(),
-#             glueContext,
-#             "final"
-#         )
-#         .resolveChoice(
-#             choice="match_catalog",
-#             database= args["glue_database_name"],
-#             table_name="postgres_genphensql_tiered_variant_categories"
-#         )
-#     )
-
-#     datasink5 = glueContext.write_dynamic_frame.from_catalog(frame = fill_new_table, database = args["glue_database_name"], table_name = "postgres_genphensql_tiered_variant_categories", transformation_ctx = "datasink5")
-
-
-    fill_new_table_ranked_annotation = (
-        DynamicFrame.fromDF(
-            ranked_annotation(vta, annot, locus_tag, protein_id, gene_locus_tag)
-            .alias("")
-            .distinct(),
-            glueContext,
-            "final"
+    variant_mapping = (
+        var_cat.alias("var_cat")
+        .drop(
+            "position"
         )
-        .resolveChoice(
-            choice="match_catalog",
-            database= args["glue_database_name"],
-            table_name="postgres_genphensql_ranked_annotation"
+        .join(
+            variant.alias("variant1"),
+            "variant_id",
+            "inner"
         )
+        .join(
+            gene_locus_tag,
+            "gene_db_crossref_id",
+            "inner"
+        )
+        # trying to remove incorrect stop codon annotations
+        # snpEff has a bug when trying to left align MCNVs on positive strand stop codons
+        # it associated them with missense annotation a little upstream of the stop codons
+        # which is wrong
+        .join(
+            end_positive_genes.alias("stop_codons"),
+            on=(F.col("stop_codons.gene_db_crossref_id")==F.col("var_cat.gene_db_crossref_id"))
+                & (
+                    (
+                        (F.col("variant1.position")==F.col("stop_codons.end_pos")) & (F.length(F.col("reference_nucleotide"))==F.length(F.col("alternative_nucleotide"))) & (F.length(F.col("reference_nucleotide"))==3)
+                    )
+                    |
+                    (
+                        (F.col("variant1.position")==(F.col("stop_codons.end_pos")+1)) & (F.length(F.col("reference_nucleotide"))==F.length(F.col("alternative_nucleotide"))) & (F.length(F.col("reference_nucleotide"))==2)
+                    )
+                    |
+                    (
+                        (F.col("variant1.position")-F.col("stop_codons.end_pos")).isin([0, 1])
+                        &
+                        (F.col("predicted_effect")=="frameshift")
+                    )
+                ),
+            how="left_anti"
+        )
+        .select(
+            F.concat_ws(
+                "_",
+                F.col("resolved_symbol"),
+                F.col("variant_category")
+            ).alias("variant"),
+            F.col("resolved_symbol"),
+            F.col("variant_category"),
+            F.col("predicted_effect"),
+            F.col("var_cat.variant_id"),
+            F.col("variant1.chromosome"),
+            F.col("variant1.position"),
+            F.col("variant1.reference_nucleotide"),
+            F.col("variant1.alternative_nucleotide"),
+        )
+        .distinct()
+        .sample(fraction=float(args["sample_fraction"]))
+        .toPandas()
     )
 
-    datasink6 = glueContext.write_dynamic_frame.from_catalog(frame = fill_new_table_ranked_annotation, database = args["glue_database_name"], table_name = "postgres_genphensql_ranked_annotation", transformation_ctx = "datasink6")
+
+
+
+#    writer = pandas.ExcelWriter(output, engine="openpyxl")
+
+    
+    #writer.save()
+    
+    #data = output.getvalue()
+
+    #s3.Bucket('aws-glue-assets-231447170434-us-east-1').put_object(Key=args["JOB_NAME"]+"/"+d+"_"+args["JOB_RUN_ID"]+"/variant_mapping.csv", Body=data)
+
+    csv_buffer = io.BytesIO()
+    variant_mapping.to_csv(csv_buffer, index=False)
+    s3.Object("aws-glue-assets-231447170434-us-east-1", args["JOB_NAME"]+"/"+d+"_"+args["JOB_RUN_ID"]+"/variant_mapping.csv").put(Body=csv_buffer.getvalue())
+
+
+    # fill_new_table = (
+    #     DynamicFrame.fromDF(
+    #         var_cat
+    #         .select(
+    #             F.col("variant_id"),
+    #             F.col("gene_db_crossref_id"),
+    #             F.col("predicted_effect"),
+    #             F.col("variant_category.variant_category"),
+    #             F.col("var_cadistance_to_reference"),
+    #         )
+    #         .alias("")
+    #         .distinct(),
+    #         glueContext,
+    #         "final"
+    #     )
+    #     .resolveChoice(
+    #         choice="match_catalog",
+    #         database= args["glue_database_name"],
+    #         table_name="postgres_genphensql_tiered_variant_categories"
+    #     )
+    # )
+
+    # datasink5 = glueContext.write_dynamic_frame.from_catalog(frame = fill_new_table, database = args["glue_database_name"], table_name = "postgres_genphensql_tiered_variant_categories", transformation_ctx = "datasink5")
+
+
+    # fill_new_table_ranked_annotation = (
+    #     DynamicFrame.fromDF(
+    #         ranked_annotation(vta, annot, locus_tag, protein_id, gene_locus_tag)
+    #         .alias("")
+    #         .distinct(),
+    #         glueContext,
+    #         "final"
+    #     )
+    #     .resolveChoice(
+    #         choice="match_catalog",
+    #         database= args["glue_database_name"],
+    #         table_name="postgres_genphensql_ranked_annotation"
+    #     )
+    # )
+
+    # datasink6 = glueContext.write_dynamic_frame.from_catalog(frame = fill_new_table_ranked_annotation, database = args["glue_database_name"], table_name = "postgres_genphensql_ranked_annotation", transformation_ctx = "datasink6")
 
     job.commit()
