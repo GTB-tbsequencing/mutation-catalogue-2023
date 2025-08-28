@@ -141,8 +141,8 @@ mainDriver(
     EXTRACTION_ID = EXTRACTION_ID,
     OUTPUT_DIRECTORY = paste0("Results/", EXTRACTION_ID),
     SCRIPT_LOCATION_DIR = "Solo algorithm - R implementation",
-    DATA_DIRECTORY = paste0("Input data files for Solo algorithms/", EXTRACTION_ID),
-    NON_DATABASE_DIRECTORY = "Input data files for Solo algorithms/additional-data"
+    DATA_DIRECTORY = "Input data files for Solo algorithms/",
+    NON_DATABASE_DIRECTORY = "Input data files for Solo algorithms/additional-data/"
 )
 ```
 

@@ -1,7 +1,8 @@
-source("SOLOport/Driver.R")
-source("SOLOport/ComputeStatsNew.R")
-source("SOLOport/Constants.R")
-source("SOLOport/Utilities.R")
+### If running the sensitivity and specificity analysis separately, uncomment the lines below after changing to the right directory
+# source("Driver.R")
+# source("ComputeStatsNew.R")
+# source("Constants.R")
+# source("Utilities.R")
 
 computeSensSpec = function(version = 2, relaxed = FALSE, safe = TRUE, skipEpistasis = TRUE, sameRIF = TRUE,
                            DATA_DIRECTORY = "SOLO Algorithm Input files/DATABASE EXTRACTION files/",
